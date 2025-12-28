@@ -1,0 +1,4524 @@
+====================================================================================================
+PROJECT EXPORT FOR LLMs
+====================================================================================================
+
+PROJECT INFORMATION:
+--------------------------------------------------
+Project Name: 3.-E-Commerce
+Generated On: 2025-12-28 12:52:26 (Asia/Calcutta / GMT+06:30)
+Total Files Processed: 31
+Export Tool: Easy Whole Project to Single Text File for LLMs v1.1.0
+Tool Author: Jota / José Guilherme Pandolfi
+
+EXPORT CONFIGURATION:
+--------------------------------------------------
+Language: en
+Max File Size: 1 MB
+Include Hidden Files: false
+Output Format: both
+Notification Level: minimal
+Custom File Name Pattern: {workspaceName}-output
+
+================================================================================
+PROJECT STRUCTURE
+================================================================================
+├── 📁 config/
+│   ├── 📄 cloudinary.js (411 B)
+│   └── 📄 razorpay.js (381 B)
+├── 📁 controllers/
+│   ├── 📄 admin-controllers.js (13.57 KB)
+│   ├── 📄 show-products-common-controller.js (1.69 KB)
+│   └── 📄 user-controllers.js (28.21 KB)
+├── 📁 database/
+│   └── 📄 db.js (484 B)
+├── 📁 helpers/
+│   ├── 📄 admin-upload-image-helper.js (757 B)
+│   ├── 📄 draft-mail-template-helper.js (818 B)
+│   ├── 📄 draft-order-details-to-admin-template.js (1.74 KB)
+│   ├── 📄 draft-out-of-stock-mail-template.js (1.7 KB)
+│   ├── 📄 generate-razorpay-signature.js (604 B)
+│   ├── 📄 send-mail.js (604 B)
+│   ├── 📄 validate-admin-details-helper.js (1.46 KB)
+│   ├── 📄 validate-and-draft-updated-data-helper.js (3.77 KB)
+│   ├── 📄 validate-product-details-helper.js (1.05 KB)
+│   ├── 📄 validate-user-details-helper.js (1.36 KB)
+│   └── 📄 validate-user-order-details.js (1.46 KB)
+├── 📁 middlewares/
+│   ├── 📄 admin-auth-middleware.js (1.46 KB)
+│   ├── 📄 admin-image-upload-middleware.js (989 B)
+│   └── 📄 user-auth-middleware.js (1.46 KB)
+├── 📁 models/
+│   ├── 📄 EAllAdmin.js (684 B)
+│   ├── 📄 EAllCartItem.js (544 B)
+│   ├── 📄 EAllOrder.js (1.25 KB)
+│   ├── 📄 EAllProduct.js (1.18 KB)
+│   └── 📄 EAllUser.js (681 B)
+├── 📁 routes/
+│   ├── 📄 admin-routes.js (1.14 KB)
+│   ├── 📄 common-routes.js (248 B)
+│   └── 📄 user-routes.js (1.64 KB)
+├── 📁 src/
+│   └── 📄 server.js (575 B)
+├── 📁 uploads/
+├── 📄 package-lock.json (64.7 KB)
+└── 📄 package.json (646 B)
+
+================================================================================
+PROJECT STATISTICS
+================================================================================
+Total Files: 31
+Total Directories: 9
+Text Files: 31
+Binary Files: 0
+Total Size: 137.07 KB
+
+FILE TYPES DISTRIBUTION:
+------------------------------
+.js             : 29
+.json           : 2
+
+================================================================================
+FILE CODE CONTENTS
+================================================================================
+
+
+================================================================================
+FILE: config/cloudinary.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 411 B
+Extension: .js
+Language: javascript
+Location: config/cloudinary.js
+Relative Path: config
+Created: 2025-12-22 10:52:14 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:26:43 (Asia/Calcutta / GMT+06:30)
+MD5: 8f6184c2acc1f65e6d376a5422ca1985
+SHA256: 6f10edf30c1861f80a2ca7a3c8ac2234ea5ff51dce7d6d9a7fed0cee68289cdc
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const cloudinary = require('cloudinary').v2;
+
+// configuring cloudinary with cloud name, api key and api secret to upload images
+cloudinary.config({
+    cloud_name : process.env.CLOUDINARY_CLOUD_NAME,
+    api_key : process.env.CLOUDINARY_API_KEY,
+    api_secret : process.env.CLOUDINARY_API_SECRET 
+});
+
+// exporting to use in admin controller for uploading product images
+module.exports = cloudinary;
+================================================================================
+
+
+================================================================================
+FILE: config/razorpay.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 381 B
+Extension: .js
+Language: javascript
+Location: config/razorpay.js
+Relative Path: config
+Created: 2025-12-25 12:33:13 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:27:44 (Asia/Calcutta / GMT+06:30)
+MD5: d3f25037f7e6e28a583344a911c41b58
+SHA256: d16317283fba1f7eeac875a3df61a1d5bccac1a16f5741c0fe098122c25044cd
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const Razorpay = require('razorpay');
+
+// configuring razor pay with key id and key secret to create order in razorpay
+const razorpayInstance = new Razorpay({
+    key_id : process.env.RAZORPAY_TEST_KEY_ID,
+    key_secret : process.env.RAZORPAY_TEST_KEY_SECRET
+});
+
+// exporting to use in user order entry controller for handling payments
+module.exports = razorpayInstance;
+================================================================================
+
+
+================================================================================
+FILE: controllers/admin-controllers.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 13.57 KB
+Extension: .js
+Language: javascript
+Location: controllers/admin-controllers.js
+Relative Path: controllers
+Created: 2025-12-21 17:12:25 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:22:26 (Asia/Calcutta / GMT+06:30)
+MD5: 1fca10e71b4d83858b993bbe961580a6
+SHA256: b5241b5af3e43606f64bb2e8d24420602455aa067e0f5968a73c0d5aed1531c3
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const bcryptjs = require('bcryptjs');
+const validator = require('validator');
+const jsonwebtoken = require('jsonwebtoken');
+const EAllAdmin = require('../models/EAllAdmin');
+const EAllProduct = require('../models/EAllProduct');
+const { validateAdminDetails } = require('../helpers/validate-admin-details-helper');
+const { validateProductDetails } = require('../helpers/validate-product-details-helper');
+const { uploadImageToCloudinary } = require('../helpers/admin-upload-image-helper');
+const { validateAndDraftUpdatedData } = require('../helpers/validate-and-draft-updated-data-helper');
+const cloudinary = require('../config/cloudinary');
+const fs = require('fs');
+
+
+// Controller to register admin
+const registerAdminController = async(req, res)=>{
+    try {
+        // validating admin details before storing
+        const { validationResult, validationMessage } = validateAdminDetails(req.body);
+
+        // if data is invalid, then returning with bad request status code
+        if (!validationResult) {
+            return res.status(400).json({
+                success : false,
+                message : validationMessage
+            });
+        }
+
+        // unwrapping username, email, password from request body
+        const {username, email, password} = req.body;
+        const checkExistingDetails = await EAllAdmin.findOne({$or:[{username}, {email}]});
+
+        // If admin already exists with same details, return with Conflict status code
+        if (checkExistingDetails) {
+            return res.status(409).json({
+                success : false,
+                message : "Admin with same username or email already exists"
+            });
+        }
+
+        // hash the  password to encrypt and store in mongoDB
+        const salt = await bcryptjs.genSalt(10);
+        const hashedPassword = bcryptjs.hash(password, salt);
+
+        req.body.password = (await hashedPassword).toString();
+
+        // Registering admin by writing details to admin
+        const newAdmin = new EAllAdmin(req.body);
+        await newAdmin.save();
+
+        // returning with accepted status code when admin registered successfully
+        if (newAdmin) {
+            return res.status(201).json({
+                success : true,
+                message : 'Admin Registered Successfully',
+                password,
+                newAdmin
+            });
+        }
+
+        res.status(500).json({
+            success : false,
+            message : 'Unable to Register Admin, Please try again later'
+        });
+        
+
+    } catch(error) {
+        console.log('An Error Occured in Catch block while registering New Admin: ', error);
+        res.status(500).json({
+            success : false,
+            message : 'An Error Occured in Catch block while registering New Admin',
+            error : error
+        });
+    }
+
+};
+
+// Controller to login admin and create JWT Token to use for authorization
+const loginAdminController = async(req, res)=>{
+    try {
+        // unwrapping admin credentials from request body
+        const { username, password } = req.body;
+
+        // validating the credentials
+        if (validator.isEmpty(username) || validator.isEmpty(password)) {
+            return res.status(406).json({
+                success : false,
+                message : "Username and Password fields should not be empty"
+            });
+        }
+
+        // Checking whether user with mentioned username already exists or not
+        const adminDetails = await EAllAdmin.findOne({username});
+        if (!adminDetails) {
+            return res.status(404).json({
+                success : false,
+                message : "Admin with entered username does not exists!"
+            });
+        }
+
+        // if username exists, then we check password is matched with stored encrypted password by comparing entered password with stored password (encrypted)
+        const passwordMatched = await bcryptjs.compare(password, adminDetails.password);
+        if (!passwordMatched) {
+            return res.status(401).json({
+                success : false,
+                message : "Incorrect Password!"
+            });
+        }
+
+        // After successful login, creating a token for admin user which is valid for 30 minutes, it is used for authorization while performing operatios like uploading, deleting, updating product
+        const adminLoginToken = jsonwebtoken.sign({
+           adminId : adminDetails._id,
+           adminUsername : adminDetails.username,
+           adminEmail : adminDetails.email, 
+           adminIsActive : adminDetails.isActive
+        },process.env.JWT_SECRET_KEY, {
+            expiresIn:'30m'
+        });
+
+        // Returning with Accepted status code when admin succesfully login
+        res.status(200).json({
+            success : true,
+            message : "Admin Logged in Successfully",
+            adminLoginToken,
+            adminDetails
+
+        });
+
+    } catch(error) {
+        console.log('An Error Occured in Catch block while Logging in as Admin: ', error);
+        res.status(500).json({
+            success : false,
+            message : 'An Error Occured in Catch block while Logging in as Admin',
+            error : error
+        });
+    }
+};
+
+// Controller to Upload Product details
+const adminProductUploadController = async(req, res)=>{
+    try {
+        // storing product details in an object
+        const productDetails = {
+            name : req.body.name,
+            category : req.body.category,
+            unitPrice : Number(req.body.unitPrice),
+            availableStock : Number(req.body.availableStock)
+        }
+        
+        // validating product details, if not valid, returning with Bad Request status code
+        const {validationResult, validationMessage} = validateProductDetails(productDetails);
+        if (!validationResult) {
+            return res.status(400).json({
+                success : false,
+                message : validationMessage
+            });
+        }
+
+        // Checking whether Image File is attached along with other details, if not, returning with Bad Request Status Code
+        if (!req.file) {
+            return res.status(400).json({
+                success : false,
+                message : "File Path of Product Image is Required!"
+            });
+        }
+
+        // Check whether product already exists or not with product name, which is unique
+        const productAlreadyExists = await EAllProduct.findOne({
+            name : productDetails.name
+        });
+
+        // If product Already exists return with Conflict status code
+        if (productAlreadyExists){
+            return res.status(409).json({
+                success : false,
+                message : "Product Already Exists"
+            });
+        }
+
+        // uploading to cloudinary cloud, and getting imageURL used to display, publicId(Unique identifier for image in cloudinary cloud) which identifies the image in cloud
+        // imageURL, publicId is stored with product details
+        const {imageURL, publicId} = await uploadImageToCloudinary(req.file.path);
+
+        // Writing details to mongoDB
+        const newproductEntry = new EAllProduct({
+            productImageURL : imageURL,
+            productImagePublicId : publicId,
+            name: productDetails.name,
+            category : productDetails.category,
+            unitPrice : productDetails.unitPrice,
+            availableStock : productDetails.availableStock,
+            addedBy : req.loggedInAdminDetails.adminId
+        });
+
+        await newproductEntry.save();
+
+        console.log("Path at end of adminProductUploadController: ", req.file.path);
+        // Before uploading to cloudinary cloud, the image is stored in local storage in /uploads folder, after successful upload it is deleted form local storage
+        fs.unlinkSync(req.file.path);
+
+        // After product entry was successful, retrning with Accepted status code
+        res.status(200).json({
+            success : true,
+            message : "Product Entry Successful",
+            newproductEntry
+        });
+
+
+    } catch(error){
+        console.log("Some error occured while uploading Product Image: ", error);
+        res.status(500).json({
+            success : false,
+            message : "Some error occured while uploading Product Image",
+            error
+        });
+    }
+};
+
+// Controller to delete image from Cloudinary
+const adminProductDeleteController = async(req, res)=>{
+    try {
+        // retrieving product Id from Request
+        const productId = req.params.id;
+
+        // Check whether products exists in the database
+        const productExists = await EAllProduct.findById(productId);
+
+        // If not exists, returning with Not Found status code
+        if (!productExists) {
+            return res.status(404).json({
+                success : false,
+                message : "Product Not Found!"
+            });
+        }
+
+        // checking whether the image to be deleted is uploaded by current logged in admin
+        if (req.loggedInAdminDetails.adminId !== (productExists.addedBy).toString()) {
+            return res.status(403).json({
+                success : false,
+                message : "Product is Uploaded by Other admin, You're not Authorised to delete this Product"
+            });
+        } 
+        
+        // checking whether product is soft deleted already
+        if (productExists.isDeleted) {
+            return res.status(410).json({
+                success : false,
+                message : "Product is already Deleted"
+            });
+        }
+
+        // making the product soft delete, because may the product is ordered previously
+        await EAllProduct.findByIdAndUpdate(productId , {
+            isDeleted : true,
+            deletedAt : Date.now()
+        });
+
+        // after soft delete returning with Accepted status code
+        res.status(200).json({
+            success : true,
+            message : "Product Deleted Successfully"
+        });
+
+    } catch(error){
+        console.log("Some error occured while deleting product: ", error);
+        res.status(500).json({
+            success : false,
+            message : "Some error occured while deleting product",
+            error
+        });
+    }
+};
+
+// Controller to update existing product details
+const adminProductUpdateController = async(req, res)=>{
+    try {
+        // retireving product Id from Request
+        const productId = req.params.id;
+
+        // checking whether product already exists or not
+        const productExists = await EAllProduct.findById(productId);
+        if (!productExists) {
+            return res.status(404).json({
+                success : false,
+                message : "Product Not Found!"
+            });
+        }
+
+        // check whether image to be updated is uploaded by current logged in user
+        if (req.loggedInAdminDetails.adminId !== (productExists.addedBy).toString()) {
+            return res.status(403).json({
+                success : false,
+                message : "Product is Uploaded by Other admin, You're not Authorised to update this Product"
+            });
+        } 
+        
+        // checking whether the product is soft deleted or not
+        if (productExists.isDeleted) {
+            return res.status(410).json({
+                success : false,
+                message : "Product is already Deleted, Unable to Update this product"
+            });
+        }
+        
+        // validating details to be udpated, as data should be consistent even while updating, drafting updated data which contains details that should be updated
+        const {updatedData, validationResult, validationMessage} = await validateAndDraftUpdatedData(req.body, req.file);
+        if (!validationResult) {
+            return res.status(400).json({
+                success : false,
+                message : "Message is: "+validationMessage
+            });
+        }
+
+        // Updating the details
+        const updationResult = await EAllProduct.findByIdAndUpdate(productId , updatedData, {
+            new : true
+        });
+        
+        // If updation failed returning with Internal Server Error Status Code
+        if (!updationResult) {
+            return res.status(500).json({
+                success : false,
+                message : "Unable to update, Please try again later"
+            });
+        }
+
+        // If updation was successful then return with Accepted status code
+        res.status(200).json({
+            success : true,
+            message : "Product details Updated Successfully"
+        });
+
+        // After successful updation we need to remove the previous image of product, as new image is already uploaded and imageURL, publicId are also updated
+        if (updationResult) {
+            await cloudinary.uploader.destroy(productExists.productImagePublicId);
+            if (req.file)
+                console.log("Path at end of adminProductUpdateController: ", req.file.path);
+                fs.unlinkSync(req.file.path);
+        }
+
+    } catch(error){
+        console.log("Some error occured while updating product details: ", error);
+        res.status(500).json({
+            success : false,
+            message : "Some error occured while updating product details",
+            error
+        });
+    }
+};
+
+// Exporting above controllers to use them in routes
+module.exports = {
+    registerAdminController,
+    loginAdminController,
+    adminProductUploadController,
+    adminProductDeleteController,
+    adminProductUpdateController
+};
+================================================================================
+
+
+================================================================================
+FILE: controllers/show-products-common-controller.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 1.69 KB
+Extension: .js
+Language: javascript
+Location: controllers/show-products-common-controller.js
+Relative Path: controllers
+Created: 2025-12-23 10:17:11 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:25:33 (Asia/Calcutta / GMT+06:30)
+MD5: 33d698b86f663d466c0add8b9acab9f4
+SHA256: 9fc6d848b81925447e061f8c3ace82f72a33a1eda4525ad85daf27cc0760e0e0
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const EAllProduct = require("../models/EAllProduct");
+
+const showProductsController = async(req, res)=>{  
+    try {
+        // retieving limit products per page, page number from request
+        const limitCount = req.query.limitCount || await EAllProduct.countDocuments({});
+        const pageNumber = req.query.pageNumber || 1;
+        const productsToBeSkipped = (pageNumber-1) * limitCount;
+        var priceOrderLowToHigh = (Number(req.query.priceOrderLowToHigh) === 1 ? 1 : -1);
+
+        // retrieving products will are available
+        const products = await EAllProduct.find({isDeleted : false}).sort({unitPrice : priceOrderLowToHigh}).skip(productsToBeSkipped).limit(limitCount).select("-_id -addedBy -isDeleted");
+
+        
+        if (products.length !== 0) {
+            // return with Accepted status code and products details icluding count
+            res.status(200).json({
+                success : true,
+                message : "Product Details Fetched Successfully",
+                count : products.length,
+                productsData : products
+            });
+        } else if (products.length === 0) {
+            // if no products exists then return with Accepted Status codes
+            res.status(200).json({
+                success : true,
+                message : "Products List is Empty"
+            });
+        }
+
+    } catch(error){
+        console.log("Some error occured while Fetching Products: ", error);
+        res.status(500).json({
+            success : false,
+            message : "Some error occured while Fetching Products"
+        });
+    }
+
+};
+
+// exporting to use in user and admin routes
+module.exports = {
+    showProductsController
+};
+================================================================================
+
+
+================================================================================
+FILE: controllers/user-controllers.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 28.21 KB
+Extension: .js
+Language: javascript
+Location: controllers/user-controllers.js
+Relative Path: controllers
+Created: 2025-12-23 10:02:39 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 19:48:19 (Asia/Calcutta / GMT+06:30)
+MD5: 7289e96f86e587b5ed206c620233efa1
+SHA256: ee0fd0db102bafbfa1bea89df0182f04adc3ad194f3d8989eac80f951fc836b0
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const bcryptjs = require('bcryptjs');
+const validator = require('validator');
+const jsonwebtoken = require('jsonwebtoken');
+const EAllUser = require('../models/EAllUser');
+const EAllAdmin = require('../models/EAllAdmin');
+const { validateUserDetails } = require('../helpers/validate-user-details-helper');
+const EAllProduct = require('../models/EAllProduct');
+const {validateUserOrderDetails} = require('../helpers/validate-user-order-details');
+const EAllOrder = require('../models/EAllOrder');
+const {sendMail} = require('../helpers/send-mail');
+const {orderConfirmationTemplate} = require('../helpers/draft-mail-template-helper');
+const {outOfStockTemplate} = require('../helpers/draft-out-of-stock-mail-template');
+const {adminOrderMailTemplate} = require('../helpers/draft-order-details-to-admin-template');
+const generateRazorpaySignature = require('../helpers/generate-razorpay-signature');
+const razorpayInstance = require('../config/razorpay');
+const readline = require("readline");
+const crypto = require('crypto');
+const EAllCartItem = require('../models/EAllCartItem');
+
+// funcion which reads input from console and returning with resolve with entered input as data
+const askQuestion = (rl, question) => {
+    return new Promise(resolve => {
+        rl.question(question, answer => {
+            resolve(answer);
+        });
+    });
+};
+
+// Controller to Register User with Valid Details
+const registerUserController = async(req, res)=>{
+    try {
+        // validate user details and receiving status
+        const { validationResult, validationMessage } = validateUserDetails(req.body);
+
+        // returning with bad request status code when data is invalid
+        if (!validationResult) {
+            return res.status(400).json({
+                success : false,
+                message : validationMessage
+            });
+        }
+
+        // Checking whether user already exists with same username or email
+        const {username, email, password} = req.body;
+        const checkExistingDetails = await EAllUser.findOne({$or:[{username}, {email}]});
+
+        // If User exists we are returning with conflict status code
+        if (checkExistingDetails) {
+            return res.status(409).json({
+                success : false,
+                message : "User with same username or email already exists"
+            });
+        }
+
+        // hash the entered user password with bcryptjs
+        const salt = await bcryptjs.genSalt(10);
+        const hashedPassword = bcryptjs.hash(password, salt);
+
+        // adding hashed password to request body
+        req.body.password = (await hashedPassword).toString();
+
+        // passing user details json to EAllUser model and saving
+        const newUser = new EAllUser(req.body);
+        await newUser.save();
+
+        // if details stored in mongoDB, returning with Created status code
+        if (newUser) {
+            return res.status(201).json({
+                success : true,
+                message : 'User Registered Successfully',
+                password,
+                newUser
+            });
+        }
+
+        res.status(500).json({
+            success : false,
+            message : 'Unable to Register User, Please try again later'
+        });
+        
+
+    } catch(error) {
+        console.log('An Error Occured in Catch block while registering New User: ', error);
+        res.status(500).json({
+            success : false,
+            message : 'An Error Occured in Catch block while registering New User',
+            error : error
+        });
+    }
+
+};
+
+// Controllers to login user and create jwt token for authorization
+const loginUserController = async(req, res)=>{
+    try {
+        // unwrapping user credentials from request body
+        const { username, password } = req.body;
+
+        // validating credentials 
+        if (validator.isEmpty(username) || validator.isEmpty(password)) {
+            return res.status(400).json({
+                success : false,
+                message : "Username and Password fields should not be empty"
+            });
+        }
+
+        // checking whether user with provided username already exists or not
+        const userDetails = await EAllUser.findOne({username});
+        if (!userDetails) {
+            return res.status(404).json({
+                success : false,
+                message : "User with entered username does not exists!"
+            });
+        }
+
+        // after ensuring username existence, checking whether entered password in credentials is matched with encrypted password stored in mongoDB
+        const passwordMatched = await bcryptjs.compare(password, userDetails.password);
+        if (!passwordMatched) {
+            return res.status(401).json({
+                success : false,
+                message : "Incorrect Password!"
+            });
+        }
+
+        // after password matched, creating a jwt token to authorize user while performing various indirect DB Operations like ordering a product
+        // token will expire in 30 minutes
+        const userLoginToken = jsonwebtoken.sign({
+           userId : userDetails._id,
+           userUsername : userDetails.username,
+           userEmail : userDetails.email, 
+           userIsActive : userDetails.isActive
+        },process.env.JWT_SECRET_KEY, {
+            expiresIn:'30m'
+        });
+
+        // after successful login, accepted status code is passed with jwt token and user details
+        res.status(200).json({
+            success : true,
+            message : "User Logged in Successfully",
+            userLoginToken,
+            userDetails
+
+        });
+
+    } catch(error) {
+        console.log('An Error Occured in Catch block while Logging in as User: ', error);
+        res.status(500).json({
+            success : false,
+            message : 'An Error Occured in Catch block while Logging in as User',
+            error : error
+        });
+    }
+};
+
+// controller for user order creation
+const userOrderEntry = async(req, res)=>{
+    try {
+        // retrieve product id of product which user wants to order
+        const requestedProductId = req.params.id;
+
+        // checking whether product exists in the database
+        const checkProductExists = await EAllProduct.findById(requestedProductId);
+
+        // return with Not Found status code if product is not there
+        if (!checkProductExists){
+            return res.status(404).json({
+                success : false,
+                message : "Product Not Exists"
+            });
+        }
+
+        // check product is disabled or not, if yes, return with Gone status code
+        if (checkProductExists.isDeleted) {
+            return res.status(410).json({
+                success : false,
+                message : "Sorry, Requested Product is Currently Not Available"
+            });
+        }
+
+        // validating the address and quantity details provided by user to make order
+        const {validationResult, validationMessage} = validateUserOrderDetails(req.body);
+
+        // if invalid, returning with Bad Request status code
+        if (!validationResult) {
+            return res.status(400).json({
+                success : false,
+                message : validationMessage
+            });
+        }
+
+        // Checking required quanity exists or not in the database, if not returning with Conflict status code
+        const quantityNumber = Number(req.body.quantity);
+        if (checkProductExists.availableStock<quantityNumber) {
+            return res.status(409).json({
+                success : false,
+                message : "Sorry Requierd Quantity is Currently Not Available"
+            });
+        }
+
+        // Validating payment type selection, in this backend application only two options are provided to as of now
+        if (req.body.paymentType !== "Cash On Delivery" && req.body.paymentType !== "Pay through Credit/Debit/UPI"){
+            return res.status(400).json({
+                success : false,
+                message : "Invalid Paymnet Type, it should be either 1. Cash On Delivery or 2. Pay through Credit/Debit/UPI"
+            });
+        }
+
+        // storing remaining quantity, which is used to decided whether to send Out of Stock mail to Admin or not
+        const remainingQuantity = checkProductExists.availableStock - quantityNumber;
+
+        // Storing order details in to variables whose variables gonna match with mongoDB Collection's attributes
+        const productId = requestedProductId;
+        const orderPlacedAt = Date.now();
+        const orderedBy = req.loggedInUserDetails.userId;
+        const shipTo = `${req.loggedInUserDetails.userUsername}\n${req.body.mobileNumber}\n${req.body.flatBuildingHouseNum}\n${req.body.areaStreet}, ${req.body.landmark}\n${req.body.townCity}, ${req.body.cityState}, ${req.body.pincode}\n${req.body.countryOrRegion}`;
+        const quantity = quantityNumber;
+        const total = quantityNumber * checkProductExists.unitPrice;
+        const paymentType = req.body.paymentType;
+        var paymentStatus = (paymentType==="Cash On Delivery")?"Pending with COD":"Pending";
+
+        // User not willing for COD, Gonna handle Payment with Razorpay Working Mechanism
+        // I'm not directly using Razorpay, because Razorpay frontend checkout page is mandatory to get order_id, payment_id, signature in to my Backend Code
+        // So, I generated Order Id by creating order in Razorpay, used sample payment_id, and using signature which manually created through razorpay mechanism through Hmac
+        // Usually this payment works like below steps:
+        // 1. After Clicking pay button, Then backend code will create order in Razorpay, then razorpay returns order_id, This order_id is passed to frontend
+        // 2. Then Frontend displays the Razorpay Checkout Page (having amount to be paid, currency, merchant details) with help of order_id, Then User performs Payment, if Payment was Successful, then order_id, payment_id and signature will be generated by razorpay checkout page
+        // 3. These Two ID and Signature passed from Razorpay checkout to Frontend, and from Frontedn to Backend these Two ID and Signature are passed
+        // 4. If Payment was Unsuccess then these Two ID and Signature was not generated
+        // 5. In the backend, if the Two ID and Signature are undefined that represents payment was unsuccess
+        // 6. In case of payment success, then payment will be validated by generating a signature with Hmac function along with razorpay api secret, and payment_id
+        // 7. Then one signature passed from frontend and another signature generated in previous step using payment_id we got from frontend
+        // 8. If those two signatures are matched, we change Payment Status from Pending to Paid
+        if (paymentStatus === "Pending") {
+            const options = {
+                amount : Math.round(total*100),
+                currency : "INR",
+                receipt : `receipt_${Date.now()}`
+            };
+
+            // create order in razorpay and getting order_id from that created order
+            const order = await razorpayInstance.orders.create(options);
+            const orderId = (order.id).toString();
+
+            // generating signature manually
+            const razorpaySignature = generateRazorpaySignature(orderId, process.env.RAZORPAY_TEST_PAYMENT_ID);
+            
+            // creating readline interface to read input from console
+            const rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+
+            // Logging Signature and IDs to console, just to think like received from frontend
+            console.log("Razorpay Order: ", order);
+            console.log("====================================");
+            console.log("Razorpay Order Id: ", order.id);
+            console.log("Razorpay Payment Id: ", process.env.RAZORPAY_TEST_PAYMENT_ID);
+            console.log("Razorpay Signature: ", razorpaySignature);
+            console.log("====================================");
+
+            // Simulating reading those IDs from frontend, but got from console input
+            console.log("🚀 Razorpay Test Simulation Started");
+            const inputOrderId = await askQuestion(rl, "Enter Razorpay Order ID: ");
+            const inputPaymentId = await askQuestion(rl, "Enter Razorpay Payment ID: ");
+            /*
+            rl.question("Enter Razorpay Order ID: ", (oId) => {
+            inputOrderId = oId;
+
+                rl.question("Enter Razorpay Payment ID: ", (pId) => {
+                    inputPaymentId = pId;
+                    
+                    rl.close();
+                });
+            });
+            */
+
+            // Generated Signture with received payment Id and order id
+            const body = inputOrderId + "|" + inputPaymentId;
+            var expectedRazorpaySignature = crypto
+                    .createHmac('sha256', process.env.RAZORPAY_TEST_KEY_SECRET)
+                    .update(body)
+                    .digest('hex');
+
+            expectedRazorpaySignature = expectedRazorpaySignature.toString(); 
+
+            // comparing signatures and defining payment status
+            if (razorpaySignature !== expectedRazorpaySignature ) {
+                return res.status(402).json({
+                    success : false,
+                    message : "Payment failed at the signature verification"
+                });
+            } else {
+                paymentStatus = "Paid via Card";
+            }
+                      
+        }
+        
+        // saving order details to mongoDB
+        const orderPlaced = new EAllOrder({
+            productId,
+            orderPlacedAt,
+            orderedBy,
+            shipTo,
+            quantity,
+            total,
+            paymentType,
+            paymentStatus
+        });
+
+        await orderPlaced.save();
+
+        // If order not stored in mongoDB, returning with Internal Server Error status code
+        if (!orderPlaced) {
+            return res.status(500).json({
+                success : false,
+                message : "Unable to Place the Order, Please try later"
+            });
+        }
+
+        // After creating order, updating the available stock count in collection
+        await EAllProduct.findByIdAndUpdate(productId, {
+            availableStock : remainingQuantity
+        });
+
+        // Collecting details to send mail to Admin regarding Out of Stock
+        const productAddedAdminId = checkProductExists.addedBy;
+        const productAddedAdminDetails = await EAllAdmin.findById(productAddedAdminId);
+
+        // Collecting details to create a Mail Template, which can be sent to User about Order Confirmation
+        var userOrderConfirmMailTemplateData = {};
+        userOrderConfirmMailTemplateData.username = req.loggedInUserDetails.userUsername;
+        userOrderConfirmMailTemplateData.orderId = orderPlaced._id;
+        userOrderConfirmMailTemplateData.productName = checkProductExists.name;
+        userOrderConfirmMailTemplateData.quantity = orderPlaced.quantity;
+        userOrderConfirmMailTemplateData.total = orderPlaced.total;
+
+        var userOrderConfirmFromTo = {};
+        userOrderConfirmFromTo.to = req.loggedInUserDetails.userEmail;
+        userOrderConfirmFromTo.subject = "Order Confirmatioin - ECommerce";
+        userOrderConfirmFromTo.html = orderConfirmationTemplate(userOrderConfirmMailTemplateData);
+        sendMail(userOrderConfirmFromTo);
+        
+        // Collecting details to create a Mail Template, which can be sent to Admin about Shipment and Order Details
+        var adminOrderMailTemplateData = {};
+        adminOrderMailTemplateData.productId = productId;
+        adminOrderMailTemplateData.orderPlacedAt = orderPlacedAt;
+        adminOrderMailTemplateData.orderedBy = req.loggedInUserDetails.userUsername;
+        adminOrderMailTemplateData.shipTo = shipTo;
+        adminOrderMailTemplateData.quantity = quantity;
+
+        var adminOrderDetailsFromTo = {};
+        adminOrderDetailsFromTo.to = productAddedAdminDetails.email;
+        adminOrderDetailsFromTo.subject = "Order and Shipment Details - Ecommerce";
+        adminOrderDetailsFromTo.html = adminOrderMailTemplate(adminOrderMailTemplateData);
+        sendMail(adminOrderDetailsFromTo);
+
+        // returning with Created status code after order created in mongoDB
+        res.status(201).json({
+            success : true,
+            message : "Order Placed Successfully",
+            orderDetails : orderPlaced
+        });
+
+        // Collecting details to create a Mail Template, which can be sent to Admin regarding Out of Stock
+        if (remainingQuantity === 0) {
+            const productName = checkProductExists.name;
+            const productId = checkProductExists._id;
+            const productImageURL = checkProductExists.productImageURL;
+            
+            var outOfStockData = {};
+            outOfStockData.productName = productName;
+            outOfStockData.productId = productId;
+            outOfStockData.productImageURL = productImageURL;
+
+            var outOfStockFromTo = {};
+            outOfStockFromTo.to = productAddedAdminDetails.email;
+            outOfStockFromTo.subject = "Product Out of Stock - ECommerce";
+            outOfStockFromTo.html = outOfStockTemplate(outOfStockData);
+            sendMail(outOfStockFromTo);
+
+        }
+
+
+    } catch (error) {
+        console.log("Some error occured while adding User Order: ", error);
+        res.status(500).json({
+            success : false,
+            message : "Some error occured while adding User Order",
+            error
+        });
+    }
+};
+
+// Controller to add user review to the product ordered 
+const userReviewRateProduct = async(req, res)=>{
+    try {
+        // retrieving productId from request, to which review and rating would be given
+        const productId = req.params.id;
+
+        // validating rating, whether it is number or character
+        const ratingNumber = Number(req.body.rating);
+        if (Number.isNaN(ratingNumber) || (ratingNumber<0 ||ratingNumber>5)) {
+            return res.status(400).json({
+                success : false,
+                message : "Rating should not be character, Only Number between 0 to 5 including both are allowed"
+            });
+        }
+
+        // returning with bad request status code when review is empty
+        if (!req.body.review) {
+            return res.status(400).json({
+                success : false,
+                message : "Review should not be empty"
+            });
+        }
+
+        // returning with 404 not found when product is not the one ordered
+        var productforReviewRating = await EAllProduct.findById(productId);
+        if (!productforReviewRating) {
+            return res.status(404).json({
+                success : false,
+                message : "Product Does not Exists!"
+            });
+        }
+
+        // checking whether the product is ordered by current logged in user, then only review and rating will be taken
+        var userOrderedCheck = await EAllOrder.find({orderedBy : req.loggedInUserDetails.userId}).select('orderedBy');
+        if (!userOrderedCheck) {
+            return res.status(403).json({
+                success : false,
+                message : "User who purchased the product only provide review and rating!"
+            });
+        }
+
+        // checking whether the product is disabled or not
+        if (productforReviewRating.isDeleted === true) {
+            return res.status(410).json({
+                success : false,
+                message : "Product is Not Available Currently!"
+            });
+        }
+
+        // calculating average rating and also formatting review with username
+        const reviewsCount = productforReviewRating.reviews.length + 1;
+        productforReviewRating.reviews.push(req.body.review +` - @${req.loggedInUserDetails.userUsername}`);
+        productforReviewRating.rating = ratingNumber/reviewsCount;
+        await productforReviewRating.save();
+
+        // returning with Accepted status code when review rating is submitted successfully
+        res.status(200).json({
+            success : true,
+            message : "Review and Rating Submitted Succcessfully"
+        });
+
+    } catch(error) {
+        console.log("Some error occured while submitting review and rating: ", error);
+        res.status(500).json({
+            success : false,
+            message : "Some error occured while submitting review and rating"
+        });
+    }
+};
+
+// Controller to retrieve user orders
+const fetchUserOrders = async(req, res)=>{
+    try {
+        // fetch details with help of Object Id(_id) of user
+        const userOrderDetails = await EAllOrder.find({orderedBy : req.loggedInUserDetails.userId});
+        if (userOrderDetails === 0) {
+            return res.status(404).json({
+                success : false,
+                message : "No Orders Placed"
+            });
+        }
+
+        // returning with Accepted status code when orders fetched successfully
+        res.status(200).json({
+            success : true,
+            message : "Orders Fetched Successfully",
+            count : userOrderDetails.length,
+            ordersDetails : userOrderDetails
+        });
+
+    } catch(error){
+        console.log("Some error occured while fetching User Orders: ", error);
+        res.status(500).json({
+            success : false,
+            message : "Some error occured while fetching User Orders",
+            error
+        });
+    }
+};
+
+// Controller to add Items to Cart
+const addToCartController = async(req, res)=>{
+    try {
+        // retrieving product Id from request
+        const productId = req.params.id;
+
+        // check whether product exists or not
+        const checkProductExists = await EAllProduct.findById(productId);
+        if (!checkProductExists || checkProductExists.isDeleted) {
+            return res.status(404).json({
+                success : false,
+                message : "Product Not Found"
+            });
+        }
+
+        // retrieve quantity to be added to the cart if provided only 1 will be added
+        var quantityNumber = Number(req.body.quantity) || 1;
+        if (Number.isNaN(quantityNumber)) {
+            return res.status(400).json({
+                success : false,
+                message : "Quantity should be numbers only"
+            });
+        }
+        quantityNumber = parseInt(quantityNumber);
+
+        // ensuring quantity is only positive integer
+        if (quantityNumber<=0) {
+            return res.status(400).json({
+                success : false,
+                message : "Quantity should not be negative numbers"
+            });
+        }
+
+        // Checking whether cart item is already added to the cart, if already exists increase the quantity or add the item to cart
+        const checkCartItemExists = await EAllCartItem.findOne({productId:productId, addedBy:(req.loggedInUserDetails.userId).toString()});
+        if (checkCartItemExists) {
+            checkCartItemExists.quantity = checkCartItemExists.quantity+quantityNumber;
+            await checkCartItemExists.save();
+            return res.status(200).json({
+                success : true,
+                message : "Quantity increased for existing Cart Item"
+            });
+        }
+
+        // add the item to the cart with quantity 1, when it is not in the cart
+        const addedToCart = new EAllCartItem({
+            quantity : quantityNumber,
+            productId : productId,
+            addedBy : req.loggedInUserDetails.userId
+        });
+
+        await addedToCart.save();
+
+        if (addedToCart) {
+            res.status(201).json({
+                success : true,
+                message : "Product Added to the Cart Successfully",
+                productAddedToCart : addedToCart
+            });
+        }
+
+    } catch(error) {
+        console.log("Some error occured while adding to cart: ", error);
+        res.status(500).json({
+            success : false,
+            message : "Some error occured while adding to cart"
+        });
+    }
+};
+
+// Controller to reduce quantity of items in cart
+const reduceOneQuantity = async(req, res)=>{
+    try {
+        // retrieving product id from request
+        const productId = req.params.id;
+
+        // check whether product exists or not
+        const checkProductExists = await EAllProduct.findById(productId);
+        if (!checkProductExists || checkProductExists.isDeleted) {
+            res.status(404).json({
+                success : false,
+                message : "Product Not Found"
+            });
+        }
+
+        // check whether the item already exists in the cart or not
+        const checkCartItemExists = await EAllCartItem.findOne({productId:productId, addedBy:(req.loggedInUserDetails.userId).toString()});
+        if (!checkCartItemExists) {
+            return res.status(404).json({
+                success : false,
+                message : "There are no Items in Cart"
+            });
+        }
+
+        // read exisitng quantity from existing cart item matched with product id
+        var existingQuantity = checkCartItemExists.quantity;
+
+        // if quantity is reduced from 1, it will be 0 right, the item will be removed from the cart
+        if (existingQuantity===1) {
+            const cartItemDelted = await EAllCartItem.findByIdAndDelete(checkCartItemExists._id);
+            if (cartItemDelted) {
+                return res.status(200).json({
+                    success : true,
+                    message : "Cart Item Reduced and Deleted"
+                });
+            }
+        } else {
+            // if existing quantity is greater than 1 then quantity should be decremented with -1
+            checkCartItemExists.quantity = checkCartItemExists.quantity - 1;
+            await checkCartItemExists.save();
+        }
+        res.status(200).json({
+            success : true,
+            message : "Cart Item Reduced"
+        });
+
+
+    } catch(error) {
+        console.log("Some error occured while removing one quantity from Cart: ", error);
+        res.status(500).json({
+            success : false,
+            message : "Some error occured while removing one quantity from Cart"
+        });
+    }
+};
+
+// Controller to delete item from the cart
+const deleteFromCart = async(req, res)=>{
+    try {
+        // retrieving product id from request
+        const productId = req.params.id;
+
+        // checking whether product is exists or not
+        const checkProductExists = await EAllProduct.findById(productId);
+        if (!checkProductExists || checkProductExists.isDeleted) {
+            res.status(404).json({
+                success : false,
+                message : "Product Not Found"
+            });
+        }
+
+        // checking whether item exists in the cart or not
+        const checkCartItemExists = await EAllCartItem.findOne({productId:productId, addedBy:(req.loggedInUserDetails.userId).toString()});
+        if (!checkCartItemExists) {
+            return res.status(404).json({
+                success : false,
+                message : "There are no Items in Cart"
+            });
+        }
+
+        // deleting item from the cart with help of Object Id (_id)
+        const deletedItem = await EAllCartItem.findByIdAndDelete(checkCartItemExists._id);
+        if (!deletedItem) {
+            res.status(500).json({
+                success : false,
+                message : "Unable to remove from cart, Please try again later"
+            });
+        }
+
+        res.status(200).json({
+            success : true,
+            message : "Item deleted from the Cart Successfully"
+        });
+
+    } catch (error) {
+        console.log("Some error occured while deleting item from cart: ", error);
+        res.status(500).json({
+            success : false,
+            message : "Some error occured while deleting item from cart",
+            error
+        });
+    }
+};
+
+// Exporting above controllers to use in routes
+module.exports = {
+    registerUserController,
+    loginUserController,
+    userOrderEntry,
+    userReviewRateProduct,
+    fetchUserOrders,
+    addToCartController,
+    reduceOneQuantity,
+    deleteFromCart
+};
+================================================================================
+
+
+================================================================================
+FILE: database/db.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 484 B
+Extension: .js
+Language: javascript
+Location: database/db.js
+Relative Path: database
+Created: 2025-12-21 15:26:17 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:28:47 (Asia/Calcutta / GMT+06:30)
+MD5: 9e34b742664487342973a4955532efd6
+SHA256: 10f54116533fd2d51a6fbad210ffd4c889a275adc748cd4aeba4d8e1a8a25a45
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const mongoose = require('mongoose');
+
+const connectDB = ()=>{
+    try {
+        // connecting to mongoDB localhost server with mongo URI exists in .env file 
+        mongoose.connect(process.env.MONGO_URI);
+        console.log('Connected to MongoDB Successfully');
+    } catch(error) {
+        console.log("An Error Occured while Connecting to MongoDB: ", error);
+        process.exit(1);
+    }
+};
+
+// exporting it and call it from server.js
+module.exports = connectDB;
+================================================================================
+
+
+================================================================================
+FILE: helpers/admin-upload-image-helper.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 757 B
+Extension: .js
+Language: javascript
+Location: helpers/admin-upload-image-helper.js
+Relative Path: helpers
+Created: 2025-12-22 11:04:15 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:30:43 (Asia/Calcutta / GMT+06:30)
+MD5: 83517ddcb4e38c8d877096266e9df7a7
+SHA256: 2026b28ac57a83dbc0ee5089bffd3b2325716d49c6a8b958979d67ddf4876987
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const cloudinary = require('../config/cloudinary');
+
+// function receives file path and upload it to cloudinary
+const uploadImageToCloudinary = async(filePath)=>{
+    try {
+        // uploading image to cloudinary by sending file path as paramter
+        const imageUploaded = await cloudinary.uploader.upload(filePath);
+        
+        // retrieving imageURL and publicId from cloudinary after uploading
+        return {
+            imageURL : imageUploaded.secure_url,
+            publicId : imageUploaded.public_id
+        };
+
+    } catch(error) {
+        console.log("An error occured while uploading Product Image: ", error);
+    }
+};
+
+// exporting it to use in admin controllers
+module.exports = {
+    uploadImageToCloudinary
+};
+================================================================================
+
+
+================================================================================
+FILE: helpers/draft-mail-template-helper.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 818 B
+Extension: .js
+Language: javascript
+Location: helpers/draft-mail-template-helper.js
+Relative Path: helpers
+Created: 2025-12-23 19:19:03 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 19:46:12 (Asia/Calcutta / GMT+06:30)
+MD5: a4c4abd61bbb70a85fd35ca5b941316d
+SHA256: eea7c2fb45c3d84aa8eca3da8ddcb54b5c18d5ca6029dc23f2f440652a79bb22
+Encoding: UTF-8
+
+FILE CONTENT:
+----------------------------------------
+// helper function to return Mail Template with html tags to the userOrderEntry Controller
+const orderConfirmationTemplate = ({
+    username,
+    orderId,
+    productName,
+    quantity,
+    total
+}) => {
+    return `
+    <div style="font-family: Arial; padding: 20px;">
+        <h2>🛒 Order Confirmed!</h2>
+        <p>Hello <b>${username}</b>,</p>
+
+        <p>Your order has been placed successfully.</p>
+
+        <hr/>
+
+        <p><b>Order ID:</b> ${orderId}</p>
+        <p><b>Product:</b> ${productName}</p>
+        <p><b>Quantity:</b> ${quantity}</p>
+        <p><b>Total Amount:</b> ₹${total}</p>
+
+        <hr/>
+
+        <p>Thank you for shopping with us ❤️</p>
+        <p><b>Your Store Team</b></p>
+    </div>
+    `;
+};
+
+module.exports = {
+    orderConfirmationTemplate
+};
+
+================================================================================
+
+
+================================================================================
+FILE: helpers/draft-order-details-to-admin-template.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 1.74 KB
+Extension: .js
+Language: javascript
+Location: helpers/draft-order-details-to-admin-template.js
+Relative Path: helpers
+Created: 2025-12-24 10:51:47 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:31:55 (Asia/Calcutta / GMT+06:30)
+MD5: 861b918ab4a5d7cc68fde5f4a43dde71
+SHA256: 0f01b1e3c85ef1751ca26eb0dbabfc3aec8c32da4221c37f377d7a100e24305f
+Encoding: UTF-8
+
+FILE CONTENT:
+----------------------------------------
+// helper function to return Mail Template with html tags to the userOrderEntry Controller
+// Template to send mail about Shipment Address and other order details
+const adminOrderMailTemplate = ({
+    productId,
+    orderPlacedAt,
+    orderedBy,
+    shipTo,
+    quantity
+}) => {
+    return `
+    <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f6f8;">
+        <div style="max-width: 650px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 6px;">
+            
+            <h2 style="color: #2c3e50;">📦 New Order Received</h2>
+
+            <p>Hello <b>Admin</b>,</p>
+
+            <p>A new order has been placed. Below are the order and shipment details.</p>
+
+            <hr/>
+
+            <h3 style="color: #34495e;">🧾 Order Information</h3>
+            <p><b>Product ID:</b> ${productId}</p>
+            <p><b>Ordered By:</b> ${orderedBy}</p>
+            <p><b>Quantity Ordered:</b> ${quantity}</p>
+            <p><b>Order Placed At:</b> ${new Date(orderPlacedAt).toLocaleString()}</p>
+
+            <hr/>
+
+            <h3 style="color: #34495e;">🚚 Shipping Address</h3>
+            <pre style="
+                background-color: #f8f9fa;
+                padding: 12px;
+                border-radius: 4px;
+                font-size: 14px;
+                white-space: pre-wrap;
+                line-height: 1.5;
+            ">${shipTo}</pre>
+
+            <hr/>
+
+            <p>Please proceed with order processing and shipment.</p>
+
+            <p style="margin-top: 30px;">
+                Regards,<br/>
+                <b>E-Commerce System (Auto Notification)</b>
+            </p>
+        </div>
+    </div>
+    `;
+};
+
+module.exports = {
+    adminOrderMailTemplate
+};
+
+================================================================================
+
+
+================================================================================
+FILE: helpers/draft-out-of-stock-mail-template.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 1.7 KB
+Extension: .js
+Language: javascript
+Location: helpers/draft-out-of-stock-mail-template.js
+Relative Path: helpers
+Created: 2025-12-24 09:43:37 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:32:23 (Asia/Calcutta / GMT+06:30)
+MD5: a306256ab9a64e9c18d32a7f55f19f62
+SHA256: 82d444c23d4097cb58aea45ed0ecbc1c3b5ba790d88f792ca8ce71226184d12b
+Encoding: UTF-8
+
+FILE CONTENT:
+----------------------------------------
+// helper function to return Mail Template with html tags to the userOrderEntry Controller
+// Template to send mail about Out of Stock Reminder to Admin
+const outOfStockTemplate = ({
+    productName,
+    productId,
+    productImageURL
+}) => {
+    return `
+    <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9;">
+        <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 6px;">
+            
+            <h2 style="color: #d9534f;">⚠️ Product Out of Stock</h2>
+
+            <p>Hello <b>Admin</b>,</p>
+
+            <p>The following product is currently <b>out of stock</b> and requires your attention.</p>
+
+            <hr/>
+
+            <div style="text-align: center; margin: 20px 0;">
+                <img 
+                    src="${productImageURL}" 
+                    alt="${productName}" 
+                    style="max-width: 100%; height: auto; border-radius: 4px;"
+                />
+            </div>
+
+            <p><b>Product Name:</b> ${productName}</p>
+            <p><b>Product ID:</b> ${productId}</p>
+
+            <hr/>
+
+            <p>Please take one of the following actions:</p>
+            <ul>
+                <li>🛠️ Replenish the stock</li>
+                <li>🗑️ Mark the product as deleted/unavailable</li>
+            </ul>
+
+            <p>Keeping inventory updated helps prevent failed orders and improves customer experience.</p>
+
+            <p style="margin-top: 30px;">
+                Regards,<br/>
+                <b>E-Commerce System (Auto Notification)</b>
+            </p>
+        </div>
+    </div>
+    `;
+};
+
+module.exports = {
+    outOfStockTemplate
+};
+
+================================================================================
+
+
+================================================================================
+FILE: helpers/generate-razorpay-signature.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 604 B
+Extension: .js
+Language: javascript
+Location: helpers/generate-razorpay-signature.js
+Relative Path: helpers
+Created: 2025-12-25 11:43:30 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:33:55 (Asia/Calcutta / GMT+06:30)
+MD5: ee1b80be356b3b5406a91e9782ba36f3
+SHA256: 903173af8fb88aefea10b2e2d61145943749480a4679bcf72e8898066dd97a45
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const crypto = require('crypto');
+
+// generating razorpay signature with Hmac, usally this signature should be passed by frontend
+// But here i'm simulating below code like it is coming from frontend, actually it is sent from below method instead of frontend
+const generateRazorpaySignature = (orderId, paymentId)=>{
+    const body = orderId + "|" + paymentId;
+    const generatedSignature =  crypto
+    .createHmac('sha256', process.env.RAZORPAY_TEST_KEY_SECRET)
+    .update(body)
+    .digest('hex');
+    return generatedSignature.toString();
+};
+
+module.exports = generateRazorpaySignature;
+================================================================================
+
+
+================================================================================
+FILE: helpers/send-mail.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 604 B
+Extension: .js
+Language: javascript
+Location: helpers/send-mail.js
+Relative Path: helpers
+Created: 2025-12-23 18:54:42 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:35:19 (Asia/Calcutta / GMT+06:30)
+MD5: 6de38812f95ebc8b0660a3dd01c5c9e6
+SHA256: 70c988d078442370ee5bf148b1f17b0c52d466c5f973116377e491643c46d1cd
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+// function sends mail with provided details like from, to, subject and html template for mail body
+const sendMail = async (formMail) => {
+
+    const mail = {
+        to : formMail.to,
+        from : process.env.FROM_MAIL,
+        subject : formMail.subject, 
+        html : formMail.html
+    };
+
+    // using sndergrid, mail will be sent
+    sgMail.send(mail).catch((error)=>{
+        console.log("Error Occured while sending mail: ", error);
+    });
+
+};
+
+module.exports = {
+    sendMail
+};
+================================================================================
+
+
+================================================================================
+FILE: helpers/validate-admin-details-helper.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 1.46 KB
+Extension: .js
+Language: javascript
+Location: helpers/validate-admin-details-helper.js
+Relative Path: helpers
+Created: 2025-12-21 17:28:50 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:36:09 (Asia/Calcutta / GMT+06:30)
+MD5: ff64b0605f1997a1e94ea4532fa4f158
+SHA256: ca450c12bd8ae2a3422e842dd392213ec5ef00f9a5120a5a6511b493f01a4a1f
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const validator = require('validator');
+
+// Below function validates admin details using validator and regular expressions
+// Corresponding validation result and message will be stored and returned
+const validateAdminDetails = (details)=>{
+    const {username, email, password, isActive } = details;
+    
+    if (validator.isEmpty(username) || validator.isEmpty(email) || validator.isEmpty(password) || typeof isActive !== 'boolean') {
+        return {
+            validationResult : false,
+            validationMessage : 'Please fill the Required fields'
+        };
+    }
+
+    if (!/^[a-zA-Z0-9_]{6,20}/.test(username)) {
+        return {
+            validationResult : false,
+            validationMessage : 'Invalid Username'
+        };
+    }
+
+    if (!validator.isEmail(email)) {
+        return {
+            validationResult : false,
+            validationMessage : 'Invalid Email'
+        };
+    }
+
+    if (!validator.isStrongPassword(password, { 
+        minLength: 8, 
+        minLowercase: 1, 
+        minUppercase: 1, 
+        minNumbers: 1, 
+        minSymbols: 1 })) {
+        return {
+            validationResult : false,
+            validationMessage : 'Invalid Password, Password length should be atleast 8, with minimum 1 lowercase, uppercase, special symbols'
+        };
+    }
+
+    return {
+        validationResult : true,
+        validationMessage : 'Data is Valid'
+    };
+};
+
+module.exports = {
+    validateAdminDetails
+};
+================================================================================
+
+
+================================================================================
+FILE: helpers/validate-and-draft-updated-data-helper.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 3.77 KB
+Extension: .js
+Language: javascript
+Location: helpers/validate-and-draft-updated-data-helper.js
+Relative Path: helpers
+Created: 2025-12-22 17:20:49 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:40:10 (Asia/Calcutta / GMT+06:30)
+MD5: 5ff3ba9be6acd870f2457aba804c3534
+SHA256: 6532889fd360c89cf892bee9fca4f888f6f4278740ac6ba722f4c709268ed822
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const {uploadImageToCloudinary} = require('./admin-upload-image-helper');
+const cloudinary = require('../config/cloudinary');
+
+// Below function validates Product Updation details using validator and uploads the image to cloudinary
+// because after inserting new image, we should delete old image of the product
+// Corresponding validation result and message will be stored and returned
+const validateAndDraftUpdatedData = async (requestBody, fileInRequest)=>{
+    try {
+        let validationResult = true;
+        let validationMessage = "Data is Valid";
+
+        // Storing the attributes in the object that are only supposed to update
+        // this avoids unnecesary updation on some fields
+        let updatedData = {};
+        if (requestBody.name)
+            updatedData.name = requestBody.name;
+        if (requestBody.category)
+            updatedData.category = requestBody.category;
+        const testUnitPrice = Number(requestBody.unitPrice);
+        if (requestBody.unitPrice !== undefined) {
+            if (Number.isNaN(testUnitPrice)) {
+                
+                return {
+                    updatedData,
+                    validationResult : false,
+                    validationMessage : "Unit Price value should be a Number"
+                };
+            }
+            else {
+                if (testUnitPrice<=0) {
+                    return {
+                        updatedData,
+                        validationResult : false,
+                        validationMessage : "Unit Price value should be greater than zero"
+                    };
+                } else {
+                    updatedData.unitPrice = testUnitPrice;
+                }
+            }
+        }
+        const testAvailableStock = Number(requestBody.availableStock);
+        if (requestBody.availableStock !== undefined) {
+            if (Number.isNaN(testAvailableStock)) {
+                return {
+                    updatedData,
+                    validationResult : false,
+                    validationMessage : "Unit Price value should be a Number"
+                };
+            }
+            else {
+                if (testAvailableStock<=0) {
+                    return {
+                        updatedData,
+                        validationResult : false,
+                        validationMessage : "Unit Price value should be greater than zero"
+                    };
+                } else {
+                    updatedData.availableStock = testAvailableStock;
+                }
+            }
+        }
+
+        // If new file is provided in request then only we will upload it to cloudinary, 
+        // and store the uploaded image's imageURL and publicId in to the updatedData object
+        let tempImageURL, tempPublicId;
+        if (fileInRequest) {
+            const {imageURL, publicId} = await uploadImageToCloudinary(fileInRequest.path);
+            tempImageURL = imageURL;
+            tempPublicId = publicId;
+        }
+
+        if (tempImageURL && tempPublicId) {
+            updatedData.productImageURL = tempImageURL;
+            updatedData.productImagePublicId = tempPublicId;
+        }
+
+        // Return the updatedData variable, which have few attributes which are only supposed to update with new data
+        return {
+            updatedData, 
+            validationResult, 
+            validationMessage
+        };
+
+
+    } catch(error){
+        console.log("Some error Occured while validating and Drafting Updated Data: ", error);
+        res.status(500).json({
+            updatedData : {},
+            validationResult : false,
+            validationMessage : "Some error Occured while validating and Drafting Updated Data",
+            error
+        });
+    }
+};
+
+module.exports = {
+    validateAndDraftUpdatedData
+};
+================================================================================
+
+
+================================================================================
+FILE: helpers/validate-product-details-helper.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 1.05 KB
+Extension: .js
+Language: javascript
+Location: helpers/validate-product-details-helper.js
+Relative Path: helpers
+Created: 2025-12-22 10:29:57 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:40:46 (Asia/Calcutta / GMT+06:30)
+MD5: 4572bfaf13aff87b8f71202beaa42efc
+SHA256: 8aec45baa6682597876146947fe88a60547fd3cfe5bb94e1dbfc0a0aeeaf37d0
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const validator = require('validator');
+
+// Below function validates Product details using validator
+const validateProductDetails = (productDetails)=>{
+    const {name, category, unitPrice, availableStock} = productDetails;
+
+    if (validator.isEmpty(name) || validator.isEmpty(category)) {
+        return {
+            validationResult : false,
+            validationMessage : "Product Name and Category Should not be Empty"
+        };
+    }
+
+    if (Number.isNaN(unitPrice) || Number.isNaN(availableStock)) {
+        return {
+            validationResult: false,
+            validationMessage: "Unit Price and Available Stock must be valid numbers"
+        };
+    }
+
+    if (unitPrice<=0 || availableStock<=0) {
+        return {
+            validationResult : false,
+            validationMessage : "Unit Price and Available Stock Should be greater than 0"
+        };
+    }
+
+    return {
+        validationResult : true,
+        validationMessage : "Product Data is Valid"
+    };
+    
+};
+
+module.exports = {
+    validateProductDetails
+};
+================================================================================
+
+
+================================================================================
+FILE: helpers/validate-user-details-helper.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 1.36 KB
+Extension: .js
+Language: javascript
+Location: helpers/validate-user-details-helper.js
+Relative Path: helpers
+Created: 2025-12-23 10:09:22 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:40:55 (Asia/Calcutta / GMT+06:30)
+MD5: 5db546e67ede4baa0b07269b0f23be72
+SHA256: 067cc54fc0a84ae2bbf26ab81690765e04580c2b68f6bfa166a8f2a94ede5b71
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const validator = require('validator');
+
+// Below function validates User details using validator
+const validateUserDetails = (details)=>{
+    const {username, email, password, isActive } = details;
+    
+    if (validator.isEmpty(username) || validator.isEmpty(email) || validator.isEmpty(password) || typeof isActive !== 'boolean') {
+        return {
+            validationResult : false,
+            validationMessage : 'Please fill the Required fields'
+        };
+    }
+
+    if (!/^[a-zA-Z0-9_]{6,20}/.test(username)) {
+        return {
+            validationResult : false,
+            validationMessage : 'Invalid Username'
+        };
+    }
+
+    if (!validator.isEmail(email)) {
+        return {
+            validationResult : false,
+            validationMessage : 'Invalid Email'
+        };
+    }
+
+    if (!validator.isStrongPassword(password, { 
+        minLength: 8, 
+        minLowercase: 1, 
+        minUppercase: 1, 
+        minNumbers: 1, 
+        minSymbols: 1 })) {
+        return {
+            validationResult : false,
+            validationMessage : 'Invalid Password, Password length should be atleast 8, with minimum 1 lowercase, uppercase, special symbols'
+        };
+    }
+
+    return {
+        validationResult : true,
+        validationMessage : 'Data is Valid'
+    };
+};
+
+module.exports = {
+    validateUserDetails
+};
+================================================================================
+
+
+================================================================================
+FILE: helpers/validate-user-order-details.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 1.46 KB
+Extension: .js
+Language: javascript
+Location: helpers/validate-user-order-details.js
+Relative Path: helpers
+Created: 2025-12-23 13:57:14 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:42:13 (Asia/Calcutta / GMT+06:30)
+MD5: a707217f70ee0b822a800d269a3bcf3d
+SHA256: d181892754233b127a5b9f0e154793a66731f1cde1d15e300d12ac2f8a0ebc66
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+// Below function validates User details like Quantity and Shipment Address details given to make order with help of Regular Expression
+const validateUserOrderDetails = (requestBody)=>{
+    const {countryOrRegion, mobileNumber, pincode, flatBuildingHouseNum, areaStreet, landmark, townCity, cityState, quantity} = requestBody;
+
+    if (!countryOrRegion || !mobileNumber || !pincode || !flatBuildingHouseNum || !areaStreet || !landmark || !townCity || !cityState || !quantity) {
+        return {
+            validationResult : false,
+            validationMessage : "Please fill the Mandatory Address Details"
+        };
+    }
+
+    if (!/^[6-9]\d{9}/.test(Number(mobileNumber))) {
+        return {
+            validationResult : false,
+            validationMessage : "Mobile Number should be Number with 10 digits only"
+        };
+    }
+
+    if (!/^[1-9]\d{5}/.test(Number(pincode))) {
+        return {
+            validationResult : false,
+            validationMessage : "Pincode should be Number with 6 digits only"
+        };
+    }
+
+    const quantityNumber = Number(quantity);
+    if (Number.isNaN(quantityNumber) && quantityNumber>0) {
+        return {
+            validationResult : false,
+            validationMessage : "Quantity should be Number and must be greater than 0"
+        };
+    }
+
+
+    return {
+        validationResult : true,
+        validationMessage : "Data is Valid"
+    };
+};
+
+module.exports = {
+    validateUserOrderDetails
+};
+================================================================================
+
+
+================================================================================
+FILE: middlewares/admin-auth-middleware.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 1.46 KB
+Extension: .js
+Language: javascript
+Location: middlewares/admin-auth-middleware.js
+Relative Path: middlewares
+Created: 2025-12-22 09:47:09 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:47:11 (Asia/Calcutta / GMT+06:30)
+MD5: 45267e8ba378cdfeac4f2c8204a2b794
+SHA256: 2a371124e1090db632c154965cb5943a4c5bd5808bd41c2787d553501094fe90
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const jsonwebtoken = require('jsonwebtoken');
+
+// Middleware called before executing controller, to check admin is logged in or not to perform any operations
+const adminAuthMiddleware = async (req, res, next)=>{
+    try {
+        // retrieve bearer token from request, it is created when admin login
+        const bearerTokenText = req.headers['authorization'];
+    
+        // it returns in form of 'bearer tokenstring', so split with single space and retrieve element at first index
+        const bearerToken = bearerTokenText && bearerTokenText.split(' ')[1];
+
+        // if there is no bearer token means admin didn't logged in return with Unauthorized status ode
+        if (!bearerToken) {
+            return res.status(401).json({
+                success : false,
+                message : 'Admin Rights to Access the Page'
+            });
+        }
+
+        // if token exists, decode to get the admin details like id, username, email, then use next() call the controller or next middleware
+        const decodedBearerToken = jsonwebtoken.verify(bearerToken, process.env.JWT_SECRET_KEY);
+        req.loggedInAdminDetails = decodedBearerToken;
+        next();
+    
+    } catch(error) {
+        console.log("Some error occured in auth-middleware: ", error);
+        res.status(401).json({
+            success : fase,
+            message : "Some error occured in auth-middleware",
+            error
+        });
+    }
+};
+
+module.exports = adminAuthMiddleware;
+================================================================================
+
+
+================================================================================
+FILE: middlewares/admin-image-upload-middleware.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 989 B
+Extension: .js
+Language: javascript
+Location: middlewares/admin-image-upload-middleware.js
+Relative Path: middlewares
+Created: 2025-12-22 11:16:12 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:49:29 (Asia/Calcutta / GMT+06:30)
+MD5: b565252b33e3d9df5933e8fd730255fe
+SHA256: 2a86b60b7c06bf5da4af6ea8e43ac5fc9e8cce6aa2ac9bed8388f1f23fdd0108
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const multer = require('multer');
+const path = require('path');
+
+// Below middleware is called before calling a controller that uploads image
+// Defining local storage, location for images to be stored before uploading them to cloudinary
+const storage = multer.diskStorage({
+    destination : function(req, file, cb){
+        cb(null, 'uploads/');
+    },
+    filename : function(req, file, cb){
+        cb(null, file.fieldname+'-'+Date.now()+path.extname(file.originalname));
+    }
+});
+
+// FileFileter checks whether uploaded file is image or not
+const checkFileFilter = (req, file, cb)=>{
+    if (file.mimetype.startsWith('image')) {
+        cb(null, true);
+    }
+    else {
+        cb(new Error("Uploaded File is not an Image, Please Upload Images only"));
+    }
+};
+
+// Export by mentioning image size limit in bytes.
+module.exports = multer({
+    storage : storage,
+    fileFilter : checkFileFilter,
+    limits : {
+        fileSize : 5*1024*1024
+    }
+});
+================================================================================
+
+
+================================================================================
+FILE: middlewares/user-auth-middleware.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 1.46 KB
+Extension: .js
+Language: javascript
+Location: middlewares/user-auth-middleware.js
+Relative Path: middlewares
+Created: 2025-12-23 13:46:44 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:47:38 (Asia/Calcutta / GMT+06:30)
+MD5: dc310dc050f5ff28daa7131b9710d557
+SHA256: 0ccec03ac36983854584befca591bd38a7de9d4e6f22b57b7d71d15d69b47edd
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const jsonwebtoken = require('jsonwebtoken');
+
+// Middleware called before executing controller, to check user is logged in or not to perform any operations
+const userAuthMiddleware = async (req, res, next)=>{
+    try {
+        // retrieve bearer token from request, it is created when user login
+        const bearerTokenText = req.headers['authorization'];
+        
+        // it returns in form of 'bearer tokenstring', so split with single space and retrieve element at first index
+        const bearerToken = bearerTokenText && bearerTokenText.split(' ')[1];
+
+        // if there is no bearer token means user didn't logged in return with Unauthorized status ode
+        if (!bearerToken) {
+            return res.status(401).json({
+                success : false,
+                message : 'Please login to Access the Page'
+            });
+        }
+
+        // if token exists, decode to get the user details like id, username, email, then use next() call the controller or next middleware
+        const decodedBearerToken = jsonwebtoken.verify(bearerToken, process.env.JWT_SECRET_KEY);
+        req.loggedInUserDetails = decodedBearerToken;
+        next();
+    
+    } catch(error) {
+        console.log("Some error occured in auth-middleware: ", error);
+        res.status(401).json({
+            success : fase,
+            message : "Some error occured in auth-middleware",
+            error
+        });
+    }
+};
+
+module.exports = userAuthMiddleware;
+================================================================================
+
+
+================================================================================
+FILE: models/EAllAdmin.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 684 B
+Extension: .js
+Language: javascript
+Location: models/EAllAdmin.js
+Relative Path: models
+Created: 2025-12-21 15:50:15 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-23 10:10:35 (Asia/Calcutta / GMT+06:30)
+MD5: 89130ba04e464d3ce5fefa571c05648b
+SHA256: 340a1f32450264e4a3eef6047819dd29a73d5a2a3f17ba2e93958e1250d868fd
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const mongoose = require('mongoose');
+
+const EAllAdminSchema = new mongoose.Schema({
+    username : {
+        type : String,
+        required : true,
+        unique : true,
+        trim : true
+    }, 
+    email : {
+        type : String,
+        required : true,
+        unique : true,
+        lowercase : true,
+        trim : true
+    }, 
+    password : {
+        type : String,
+        required : true,
+        trim : true,
+    },
+    isActive : {
+        type : Boolean,
+        required : true
+    },
+    registrationDate : {
+        type : Date,
+        default : Date.now()
+    }
+});
+
+module.exports = mongoose.model('EAllAdmin', EAllAdminSchema);
+================================================================================
+
+
+================================================================================
+FILE: models/EAllCartItem.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 544 B
+Extension: .js
+Language: javascript
+Location: models/EAllCartItem.js
+Relative Path: models
+Created: 2025-12-25 19:15:22 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:50:26 (Asia/Calcutta / GMT+06:30)
+MD5: 4cb21b6ea6112f737adb6229854b8485
+SHA256: aa1b475bd6a82eaa54edfda57666a44763b105b95796f46b9bbfad7574fad11c
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const mongoose = require('mongoose');
+
+const EAllCartItemSchema = new mongoose.Schema({
+    quantity : {
+        type : Number
+    },
+    productId : {
+        // Refers EAllProduct Collection with Object Id as Type
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "EAllProduct"
+    },
+    addedBy : {
+        // Refers EAllUser Collection with Object Id as Type
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "EAllUser"
+    }
+});
+
+module.exports = mongoose.model('EAllCartItem', EAllCartItemSchema);
+================================================================================
+
+
+================================================================================
+FILE: models/EAllOrder.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 1.25 KB
+Extension: .js
+Language: javascript
+Location: models/EAllOrder.js
+Relative Path: models
+Created: 2025-12-23 12:44:12 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:51:50 (Asia/Calcutta / GMT+06:30)
+MD5: cacabcea201e33583fa1477414da6507
+SHA256: 48b8dbc9f5fefa4beb81dada78b5845b09af1ae4e3a12e1a89c98fe7e3151407
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const mongoose  = require('mongoose');
+
+const EAllOrderSchema = new mongoose.Schema({
+    productId : {
+        // Refers EAllProduct Collection with Object Id as Type
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'EAllProduct',
+        trim : true
+    },
+    orderPlacedAt : {
+        type : Date,
+        required : true
+    },
+    orderedBy : {
+        // Refers EAllUser Collection with Object Id as Type
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'EAllUser',
+        required : true
+    },
+    shipTo : {
+        type : String,
+        required : true
+    },
+    quantity : {
+        type : Number,
+        required : true
+    }, 
+    total : {
+        type : Number,
+        required : true
+    }, 
+    paymentType : {
+        // Used enum to ensure only two payment methods got stored
+        type : String,
+        required : true,
+        enum : ["Cash On Delivery", "Pay through Credit/Debit/UPI"]
+    }, 
+    paymentStatus : {
+        // Used enum to ensure only three payment status flags got stored
+        type : String,
+        required : true,
+        enum : ["Paid via Card", "Pending with COD", "Pending"]
+    }
+
+});
+
+module.exports = mongoose.model('EAllOrder', EAllOrderSchema);
+================================================================================
+
+
+================================================================================
+FILE: models/EAllProduct.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 1.18 KB
+Extension: .js
+Language: javascript
+Location: models/EAllProduct.js
+Relative Path: models
+Created: 2025-12-22 09:12:10 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:51:00 (Asia/Calcutta / GMT+06:30)
+MD5: f12005e61f92c24f6d0f5ed0c26ebe5c
+SHA256: 82e95fa6eeed61298e185ac64ac7dbe49bf2799e0f3f8d5a361c374e16d18a4c
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const mongoose = require('mongoose');
+
+const EAllProdctSchema = new mongoose.Schema({
+    productImageURL : {
+        type : String,
+        required : true,
+        trim : true
+    },
+    productImagePublicId : {
+        type : String,
+        required : true,
+        trim : true
+    },
+    name : {
+        type : String,
+        required : true,
+        unique : true,
+        trim : true
+    },
+    category : {
+        type : String,
+        required : true,
+        trim : true
+    },
+    unitPrice : {
+        type : Number,
+        required : true
+    },
+    availableStock : {
+        type : Number,
+        required : true
+    },
+    reviews : {
+        type : [String],
+        default : []
+    },
+    rating : {
+        type : Number,
+        default : 0
+    },
+    addedBy : {
+        // Refers EAllAdmin Collection with Object Id as Type
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'EAllAdmin',
+        required : true
+    }, 
+    isDeleted : {
+        type : Boolean,
+        default : false,
+    },
+    deletedAt : {
+        type : Date
+    }
+
+});
+
+module.exports = mongoose.model('EAllProduct', EAllProdctSchema);
+================================================================================
+
+
+================================================================================
+FILE: models/EAllUser.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 681 B
+Extension: .js
+Language: javascript
+Location: models/EAllUser.js
+Relative Path: models
+Created: 2025-12-21 15:33:26 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:52:00 (Asia/Calcutta / GMT+06:30)
+MD5: 25f1f340516866cef437590fd9122e8a
+SHA256: 3907f3dd02c86ec848838e2e87595cde859b1759ef3cf8c69feeafef2658ade1
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const mongoose = require('mongoose');
+
+const EAllUserSchema = new mongoose.Schema({
+    username : {
+        type : String,
+        required : true,
+        unique : true,
+        trim : true
+    }, 
+    email : {
+        type : String,
+        required : true,
+        unique : true,
+        lowercase : true,
+        trim : true
+    }, 
+    password : {
+        type : String,
+        required : true,
+        trim : true,
+    },
+    isActive : {
+        type : Boolean,
+        required : true
+    },
+    registrationDate : {
+        type : Date,
+        default : Date.now()
+    }
+});
+
+module.exports = mongoose.model('EAllUser', EAllUserSchema);
+================================================================================
+
+
+================================================================================
+FILE: routes/admin-routes.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 1.14 KB
+Extension: .js
+Language: javascript
+Location: routes/admin-routes.js
+Relative Path: routes
+Created: 2025-12-21 18:01:28 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:53:20 (Asia/Calcutta / GMT+06:30)
+MD5: f5df27dc4a211b3499327bb9f0d1e22e
+SHA256: 39a4de09ccc267d77ae8832a4c008a69e07164f05df53fc6ea48f6e639ff5fe5
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const express = require('express');
+const { registerAdminController, loginAdminController, adminProductUploadController, adminProductDeleteController, adminProductUpdateController } = require('../controllers/admin-controllers');
+const adminImageUploadMiddleware = require('../middlewares/admin-image-upload-middleware');
+const adminAuthMiddleware = require('../middlewares/admin-auth-middleware');
+const router = express.Router();
+
+router.post('/register', registerAdminController);
+router.post('/login', loginAdminController);
+// used image upload middleware before calling the controller so that multer is used to enture local storage, and file filter
+router.post('/upload-product', adminAuthMiddleware, adminImageUploadMiddleware.single('image'), adminProductUploadController);
+router.delete('/delete-product/:id',adminAuthMiddleware, adminProductDeleteController);
+// used image upload middleware before calling the controller so that multer is used to enture local storage, and file filter
+router.put('/update-product/:id', adminAuthMiddleware, adminImageUploadMiddleware.single('image'), adminProductUpdateController);
+
+module.exports = router;
+================================================================================
+
+
+================================================================================
+FILE: routes/common-routes.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 248 B
+Extension: .js
+Language: javascript
+Location: routes/common-routes.js
+Relative Path: routes
+Created: 2025-12-23 10:43:09 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-23 10:47:14 (Asia/Calcutta / GMT+06:30)
+MD5: 340e806103e28e153aa69dac892c7750
+SHA256: 9f9f9f5669ea89ef50d8bf24bac9410411202286e2ec7d8fe01580a4433ee7ac
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const express = require('express');
+const router = express.Router();
+const {showProductsController} = require('../controllers/show-products-common-controller');
+
+router.get('/fetch-products', showProductsController);
+
+module.exports = router;
+================================================================================
+
+
+================================================================================
+FILE: routes/user-routes.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 1.64 KB
+Extension: .js
+Language: javascript
+Location: routes/user-routes.js
+Relative Path: routes
+Created: 2025-12-23 10:12:06 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-27 20:55:39 (Asia/Calcutta / GMT+06:30)
+MD5: 5633c6a609fd823b10eb2c93b464f9c1
+SHA256: 4767b416a0a24747e157d425f05b34d8541b3b5e03737e23abe7c00f70e2adb1
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+const express = require('express');
+const router = express.Router();
+const {registerUserController, loginUserController, userOrderEntry, userReviewRateProduct, fetchUserOrders, addToCartController, reduceOneQuantity, deleteFromCart} = require('../controllers/user-controllers');
+const userAuthMiddleware = require('../middlewares/user-auth-middleware');
+const multer = require('multer');
+const upload = multer();
+
+router.post('/register',registerUserController);
+router.post('/login', loginUserController);
+// used upload.none(), because we configured multer which expects an image file while giving our data in by enabling form-data radio button under body tab of request in postman, 
+// if we provide data by enabling raw radio button under body tab of request in postman, we dont need to use upload.none()
+router.post('/place-order/:id', upload.none(), userAuthMiddleware, userOrderEntry);
+router.put('/review-and-rate-product/:id', upload.none(), userAuthMiddleware, userReviewRateProduct);
+router.get('/view-user-orders', userAuthMiddleware, fetchUserOrders);
+// used upload.none(), because we configured multer which expects an image file while giving our data in by enabling form-data radio button under body tab of request in postman, 
+// if we provide data by enabling raw radio button under body tab of request in postman, we dont need to use upload.none()
+router.post('/add-to-cart/:id', upload.none(), userAuthMiddleware, addToCartController);
+router.put('/reduce-cart/:id', upload.none(), userAuthMiddleware, reduceOneQuantity);
+router.delete('/delete-from-cart/:id', upload.none(), userAuthMiddleware, deleteFromCart);
+module.exports = router;
+================================================================================
+
+
+================================================================================
+FILE: src/server.js
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 575 B
+Extension: .js
+Language: javascript
+Location: src/server.js
+Relative Path: src
+Created: 2025-12-21 15:22:18 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-23 10:44:57 (Asia/Calcutta / GMT+06:30)
+MD5: a1321c1c41506510c6f25de276be9f42
+SHA256: ef1c4cce28a6a33c3bb2456b4e198a618ebc943d314d2a383f2dbd6411024a30
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+require('dotenv').config();
+const express = require('express');
+const connectDB = require('../database/db');
+const adminRoutes = require('../routes/admin-routes');
+const userRoutes = require('../routes/user-routes');
+const commonRoutes = require('../routes/common-routes');
+
+const app = express();
+
+app.use(express.json());
+
+app.use('/api/admin', adminRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/common', commonRoutes);
+
+connectDB();
+
+app.listen(process.env.PORT, ()=>{
+    console.log(`Server is now running at port ${process.env.PORT}`);
+});
+================================================================================
+
+
+================================================================================
+FILE: package-lock.json
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 64.7 KB
+Extension: .json
+Language: json
+Location: package-lock.json
+Relative Path: root
+Created: 2025-12-21 15:19:48 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-25 11:43:52 (Asia/Calcutta / GMT+06:30)
+MD5: bf1e9cf8a16a6a6a801af57c7b5aadb9
+SHA256: 6fe3caf5455d6e463a755b5247c9274e0ce26aedd578ff88003e0a2baeefc0c0
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+{
+  "name": "3.-e-commerce",
+  "version": "1.0.0",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "3.-e-commerce",
+      "version": "1.0.0",
+      "license": "ISC",
+      "dependencies": {
+        "@sendgrid/mail": "^8.1.6",
+        "bcryptjs": "^3.0.3",
+        "cloudinary": "^2.8.0",
+        "crypto": "^1.0.1",
+        "dotenv": "^17.2.3",
+        "express": "^5.2.1",
+        "jsonwebtoken": "^9.0.3",
+        "mongoose": "^9.0.2",
+        "multer": "^2.0.2",
+        "razorpay": "^2.9.6",
+        "validator": "^13.15.26"
+      },
+      "devDependencies": {
+        "nodemon": "^3.1.11"
+      }
+    },
+    "node_modules/@mongodb-js/saslprep": {
+      "version": "1.4.4",
+      "resolved": "https://registry.npmjs.org/@mongodb-js/saslprep/-/saslprep-1.4.4.tgz",
+      "integrity": "sha512-p7X/ytJDIdwUfFL/CLOhKgdfJe1Fa8uw9seJYvdOmnP9JBWGWHW69HkOixXS6Wy9yvGf1MbhcS6lVmrhy4jm2g==",
+      "dependencies": {
+        "sparse-bitfield": "^3.0.3"
+      }
+    },
+    "node_modules/@sendgrid/client": {
+      "version": "8.1.6",
+      "resolved": "https://registry.npmjs.org/@sendgrid/client/-/client-8.1.6.tgz",
+      "integrity": "sha512-/BHu0hqwXNHr2aLhcXU7RmmlVqrdfrbY9KpaNj00KZHlVOVoRxRVrpOCabIB+91ISXJ6+mLM9vpaVUhK6TwBWA==",
+      "dependencies": {
+        "@sendgrid/helpers": "^8.0.0",
+        "axios": "^1.12.0"
+      },
+      "engines": {
+        "node": ">=12.*"
+      }
+    },
+    "node_modules/@sendgrid/helpers": {
+      "version": "8.0.0",
+      "resolved": "https://registry.npmjs.org/@sendgrid/helpers/-/helpers-8.0.0.tgz",
+      "integrity": "sha512-Ze7WuW2Xzy5GT5WRx+yEv89fsg/pgy3T1E3FS0QEx0/VvRmigMZ5qyVGhJz4SxomegDkzXv/i0aFPpHKN8qdAA==",
+      "dependencies": {
+        "deepmerge": "^4.2.2"
+      },
+      "engines": {
+        "node": ">= 12.0.0"
+      }
+    },
+    "node_modules/@sendgrid/mail": {
+      "version": "8.1.6",
+      "resolved": "https://registry.npmjs.org/@sendgrid/mail/-/mail-8.1.6.tgz",
+      "integrity": "sha512-/ZqxUvKeEztU9drOoPC/8opEPOk+jLlB2q4+xpx6HVLq6aFu3pMpalkTpAQz8XfRfpLp8O25bh6pGPcHDCYpqg==",
+      "dependencies": {
+        "@sendgrid/client": "^8.1.5",
+        "@sendgrid/helpers": "^8.0.0"
+      },
+      "engines": {
+        "node": ">=12.*"
+      }
+    },
+    "node_modules/@types/webidl-conversions": {
+      "version": "7.0.3",
+      "resolved": "https://registry.npmjs.org/@types/webidl-conversions/-/webidl-conversions-7.0.3.tgz",
+      "integrity": "sha512-CiJJvcRtIgzadHCYXw7dqEnMNRjhGZlYK05Mj9OyktqV8uVT8fD2BFOB7S1uwBE3Kj2Z+4UyPmFw/Ixgw/LAlA=="
+    },
+    "node_modules/@types/whatwg-url": {
+      "version": "13.0.0",
+      "resolved": "https://registry.npmjs.org/@types/whatwg-url/-/whatwg-url-13.0.0.tgz",
+      "integrity": "sha512-N8WXpbE6Wgri7KUSvrmQcqrMllKZ9uxkYWMt+mCSGwNc0Hsw9VQTW7ApqI4XNrx6/SaM2QQJCzMPDEXE058s+Q==",
+      "dependencies": {
+        "@types/webidl-conversions": "*"
+      }
+    },
+    "node_modules/accepts": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/accepts/-/accepts-2.0.0.tgz",
+      "integrity": "sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng==",
+      "dependencies": {
+        "mime-types": "^3.0.0",
+        "negotiator": "^1.0.0"
+      },
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
+    "node_modules/anymatch": {
+      "version": "3.1.3",
+      "resolved": "https://registry.npmjs.org/anymatch/-/anymatch-3.1.3.tgz",
+      "integrity": "sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw==",
+      "dev": true,
+      "dependencies": {
+        "normalize-path": "^3.0.0",
+        "picomatch": "^2.0.4"
+      },
+      "engines": {
+        "node": ">= 8"
+      }
+    },
+    "node_modules/append-field": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/append-field/-/append-field-1.0.0.tgz",
+      "integrity": "sha512-klpgFSWLW1ZEs8svjfb7g4qWY0YS5imI82dTg+QahUvJ8YqAY0P10Uk8tTyh9ZGuYEZEMaeJYCF5BFuX552hsw=="
+    },
+    "node_modules/asynckit": {
+      "version": "0.4.0",
+      "resolved": "https://registry.npmjs.org/asynckit/-/asynckit-0.4.0.tgz",
+      "integrity": "sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q=="
+    },
+    "node_modules/axios": {
+      "version": "1.13.2",
+      "resolved": "https://registry.npmjs.org/axios/-/axios-1.13.2.tgz",
+      "integrity": "sha512-VPk9ebNqPcy5lRGuSlKx752IlDatOjT9paPlm8A7yOuW2Fbvp4X3JznJtT4f0GzGLLiWE9W8onz51SqLYwzGaA==",
+      "dependencies": {
+        "follow-redirects": "^1.15.6",
+        "form-data": "^4.0.4",
+        "proxy-from-env": "^1.1.0"
+      }
+    },
+    "node_modules/balanced-match": {
+      "version": "1.0.2",
+      "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.2.tgz",
+      "integrity": "sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==",
+      "dev": true
+    },
+    "node_modules/bcryptjs": {
+      "version": "3.0.3",
+      "resolved": "https://registry.npmjs.org/bcryptjs/-/bcryptjs-3.0.3.tgz",
+      "integrity": "sha512-GlF5wPWnSa/X5LKM1o0wz0suXIINz1iHRLvTS+sLyi7XPbe5ycmYI3DlZqVGZZtDgl4DmasFg7gOB3JYbphV5g==",
+      "bin": {
+        "bcrypt": "bin/bcrypt"
+      }
+    },
+    "node_modules/binary-extensions": {
+      "version": "2.3.0",
+      "resolved": "https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.3.0.tgz",
+      "integrity": "sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==",
+      "dev": true,
+      "engines": {
+        "node": ">=8"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/body-parser": {
+      "version": "2.2.1",
+      "resolved": "https://registry.npmjs.org/body-parser/-/body-parser-2.2.1.tgz",
+      "integrity": "sha512-nfDwkulwiZYQIGwxdy0RUmowMhKcFVcYXUU7m4QlKYim1rUtg83xm2yjZ40QjDuc291AJjjeSc9b++AWHSgSHw==",
+      "dependencies": {
+        "bytes": "^3.1.2",
+        "content-type": "^1.0.5",
+        "debug": "^4.4.3",
+        "http-errors": "^2.0.0",
+        "iconv-lite": "^0.7.0",
+        "on-finished": "^2.4.1",
+        "qs": "^6.14.0",
+        "raw-body": "^3.0.1",
+        "type-is": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=18"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/express"
+      }
+    },
+    "node_modules/brace-expansion": {
+      "version": "1.1.12",
+      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.12.tgz",
+      "integrity": "sha512-9T9UjW3r0UW5c1Q7GTwllptXwhvYmEzFhzMfZ9H7FQWt+uZePjZPjBP/W1ZEyZ1twGWom5/56TF4lPcqjnDHcg==",
+      "dev": true,
+      "dependencies": {
+        "balanced-match": "^1.0.0",
+        "concat-map": "0.0.1"
+      }
+    },
+    "node_modules/braces": {
+      "version": "3.0.3",
+      "resolved": "https://registry.npmjs.org/braces/-/braces-3.0.3.tgz",
+      "integrity": "sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==",
+      "dev": true,
+      "dependencies": {
+        "fill-range": "^7.1.1"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/bson": {
+      "version": "7.0.0",
+      "resolved": "https://registry.npmjs.org/bson/-/bson-7.0.0.tgz",
+      "integrity": "sha512-Kwc6Wh4lQ5OmkqqKhYGKIuELXl+EPYSCObVE6bWsp1T/cGkOCBN0I8wF/T44BiuhHyNi1mmKVPXk60d41xZ7kw==",
+      "engines": {
+        "node": ">=20.19.0"
+      }
+    },
+    "node_modules/buffer-equal-constant-time": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/buffer-equal-constant-time/-/buffer-equal-constant-time-1.0.1.tgz",
+      "integrity": "sha512-zRpUiDwd/xk6ADqPMATG8vc9VPrkck7T07OIx0gnjmJAnHnTVXNQG3vfvWNuiZIkwu9KrKdA1iJKfsfTVxE6NA=="
+    },
+    "node_modules/buffer-from": {
+      "version": "1.1.2",
+      "resolved": "https://registry.npmjs.org/buffer-from/-/buffer-from-1.1.2.tgz",
+      "integrity": "sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ=="
+    },
+    "node_modules/busboy": {
+      "version": "1.6.0",
+      "resolved": "https://registry.npmjs.org/busboy/-/busboy-1.6.0.tgz",
+      "integrity": "sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==",
+      "dependencies": {
+        "streamsearch": "^1.1.0"
+      },
+      "engines": {
+        "node": ">=10.16.0"
+      }
+    },
+    "node_modules/bytes": {
+      "version": "3.1.2",
+      "resolved": "https://registry.npmjs.org/bytes/-/bytes-3.1.2.tgz",
+      "integrity": "sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==",
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/call-bind-apply-helpers": {
+      "version": "1.0.2",
+      "resolved": "https://registry.npmjs.org/call-bind-apply-helpers/-/call-bind-apply-helpers-1.0.2.tgz",
+      "integrity": "sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==",
+      "dependencies": {
+        "es-errors": "^1.3.0",
+        "function-bind": "^1.1.2"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/call-bound": {
+      "version": "1.0.4",
+      "resolved": "https://registry.npmjs.org/call-bound/-/call-bound-1.0.4.tgz",
+      "integrity": "sha512-+ys997U96po4Kx/ABpBCqhA9EuxJaQWDQg7295H4hBphv3IZg0boBKuwYpt4YXp6MZ5AmZQnU/tyMTlRpaSejg==",
+      "dependencies": {
+        "call-bind-apply-helpers": "^1.0.2",
+        "get-intrinsic": "^1.3.0"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/chokidar": {
+      "version": "3.6.0",
+      "resolved": "https://registry.npmjs.org/chokidar/-/chokidar-3.6.0.tgz",
+      "integrity": "sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==",
+      "dev": true,
+      "dependencies": {
+        "anymatch": "~3.1.2",
+        "braces": "~3.0.2",
+        "glob-parent": "~5.1.2",
+        "is-binary-path": "~2.1.0",
+        "is-glob": "~4.0.1",
+        "normalize-path": "~3.0.0",
+        "readdirp": "~3.6.0"
+      },
+      "engines": {
+        "node": ">= 8.10.0"
+      },
+      "funding": {
+        "url": "https://paulmillr.com/funding/"
+      },
+      "optionalDependencies": {
+        "fsevents": "~2.3.2"
+      }
+    },
+    "node_modules/cloudinary": {
+      "version": "2.8.0",
+      "resolved": "https://registry.npmjs.org/cloudinary/-/cloudinary-2.8.0.tgz",
+      "integrity": "sha512-s7frvR0HnQXeJsQSIsbLa/I09IMb1lOnVLEDH5b5E53WTiCYgrNNOBGV/i/nLHwrcEOUkqjfSwP1+enXWNYmdw==",
+      "dependencies": {
+        "lodash": "^4.17.21",
+        "q": "^1.5.1"
+      },
+      "engines": {
+        "node": ">=9"
+      }
+    },
+    "node_modules/combined-stream": {
+      "version": "1.0.8",
+      "resolved": "https://registry.npmjs.org/combined-stream/-/combined-stream-1.0.8.tgz",
+      "integrity": "sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==",
+      "dependencies": {
+        "delayed-stream": "~1.0.0"
+      },
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/concat-map": {
+      "version": "0.0.1",
+      "resolved": "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz",
+      "integrity": "sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==",
+      "dev": true
+    },
+    "node_modules/concat-stream": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/concat-stream/-/concat-stream-2.0.0.tgz",
+      "integrity": "sha512-MWufYdFw53ccGjCA+Ol7XJYpAlW6/prSMzuPOTRnJGcGzuhLn4Scrz7qf6o8bROZ514ltazcIFJZevcfbo0x7A==",
+      "engines": [
+        "node >= 6.0"
+      ],
+      "dependencies": {
+        "buffer-from": "^1.0.0",
+        "inherits": "^2.0.3",
+        "readable-stream": "^3.0.2",
+        "typedarray": "^0.0.6"
+      }
+    },
+    "node_modules/content-disposition": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/content-disposition/-/content-disposition-1.0.1.tgz",
+      "integrity": "sha512-oIXISMynqSqm241k6kcQ5UwttDILMK4BiurCfGEREw6+X9jkkpEe5T9FZaApyLGGOnFuyMWZpdolTXMtvEJ08Q==",
+      "engines": {
+        "node": ">=18"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/express"
+      }
+    },
+    "node_modules/content-type": {
+      "version": "1.0.5",
+      "resolved": "https://registry.npmjs.org/content-type/-/content-type-1.0.5.tgz",
+      "integrity": "sha512-nTjqfcBFEipKdXCv4YDQWCfmcLZKm81ldF0pAopTvyrFGVbcR6P/VAAd5G7N+0tTr8QqiU0tFadD6FK4NtJwOA==",
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
+    "node_modules/cookie": {
+      "version": "0.7.2",
+      "resolved": "https://registry.npmjs.org/cookie/-/cookie-0.7.2.tgz",
+      "integrity": "sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==",
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
+    "node_modules/cookie-signature": {
+      "version": "1.2.2",
+      "resolved": "https://registry.npmjs.org/cookie-signature/-/cookie-signature-1.2.2.tgz",
+      "integrity": "sha512-D76uU73ulSXrD1UXF4KE2TMxVVwhsnCgfAyTg9k8P6KGZjlXKrOLe4dJQKI3Bxi5wjesZoFXJWElNWBjPZMbhg==",
+      "engines": {
+        "node": ">=6.6.0"
+      }
+    },
+    "node_modules/crypto": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/crypto/-/crypto-1.0.1.tgz",
+      "integrity": "sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==",
+      "deprecated": "This package is no longer supported. It's now a built-in Node module. If you've depended on crypto, you should switch to the one that's built-in."
+    },
+    "node_modules/debug": {
+      "version": "4.4.3",
+      "resolved": "https://registry.npmjs.org/debug/-/debug-4.4.3.tgz",
+      "integrity": "sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==",
+      "dependencies": {
+        "ms": "^2.1.3"
+      },
+      "engines": {
+        "node": ">=6.0"
+      },
+      "peerDependenciesMeta": {
+        "supports-color": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/deepmerge": {
+      "version": "4.3.1",
+      "resolved": "https://registry.npmjs.org/deepmerge/-/deepmerge-4.3.1.tgz",
+      "integrity": "sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/delayed-stream": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/delayed-stream/-/delayed-stream-1.0.0.tgz",
+      "integrity": "sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==",
+      "engines": {
+        "node": ">=0.4.0"
+      }
+    },
+    "node_modules/depd": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/depd/-/depd-2.0.0.tgz",
+      "integrity": "sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==",
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/dotenv": {
+      "version": "17.2.3",
+      "resolved": "https://registry.npmjs.org/dotenv/-/dotenv-17.2.3.tgz",
+      "integrity": "sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w==",
+      "engines": {
+        "node": ">=12"
+      },
+      "funding": {
+        "url": "https://dotenvx.com"
+      }
+    },
+    "node_modules/dunder-proto": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/dunder-proto/-/dunder-proto-1.0.1.tgz",
+      "integrity": "sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==",
+      "dependencies": {
+        "call-bind-apply-helpers": "^1.0.1",
+        "es-errors": "^1.3.0",
+        "gopd": "^1.2.0"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/ecdsa-sig-formatter": {
+      "version": "1.0.11",
+      "resolved": "https://registry.npmjs.org/ecdsa-sig-formatter/-/ecdsa-sig-formatter-1.0.11.tgz",
+      "integrity": "sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==",
+      "dependencies": {
+        "safe-buffer": "^5.0.1"
+      }
+    },
+    "node_modules/ee-first": {
+      "version": "1.1.1",
+      "resolved": "https://registry.npmjs.org/ee-first/-/ee-first-1.1.1.tgz",
+      "integrity": "sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow=="
+    },
+    "node_modules/encodeurl": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/encodeurl/-/encodeurl-2.0.0.tgz",
+      "integrity": "sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==",
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/es-define-property": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/es-define-property/-/es-define-property-1.0.1.tgz",
+      "integrity": "sha512-e3nRfgfUZ4rNGL232gUgX06QNyyez04KdjFrF+LTRoOXmrOgFKDg4BCdsjW8EnT69eqdYGmRpJwiPVYNrCaW3g==",
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/es-errors": {
+      "version": "1.3.0",
+      "resolved": "https://registry.npmjs.org/es-errors/-/es-errors-1.3.0.tgz",
+      "integrity": "sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==",
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/es-object-atoms": {
+      "version": "1.1.1",
+      "resolved": "https://registry.npmjs.org/es-object-atoms/-/es-object-atoms-1.1.1.tgz",
+      "integrity": "sha512-FGgH2h8zKNim9ljj7dankFPcICIK9Cp5bm+c2gQSYePhpaG5+esrLODihIorn+Pe6FGJzWhXQotPv73jTaldXA==",
+      "dependencies": {
+        "es-errors": "^1.3.0"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/es-set-tostringtag": {
+      "version": "2.1.0",
+      "resolved": "https://registry.npmjs.org/es-set-tostringtag/-/es-set-tostringtag-2.1.0.tgz",
+      "integrity": "sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==",
+      "dependencies": {
+        "es-errors": "^1.3.0",
+        "get-intrinsic": "^1.2.6",
+        "has-tostringtag": "^1.0.2",
+        "hasown": "^2.0.2"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/escape-html": {
+      "version": "1.0.3",
+      "resolved": "https://registry.npmjs.org/escape-html/-/escape-html-1.0.3.tgz",
+      "integrity": "sha512-NiSupZ4OeuGwr68lGIeym/ksIZMJodUGOSCZ/FSnTxcrekbvqrgdUxlJOMpijaKZVjAJrWrGs/6Jy8OMuyj9ow=="
+    },
+    "node_modules/etag": {
+      "version": "1.8.1",
+      "resolved": "https://registry.npmjs.org/etag/-/etag-1.8.1.tgz",
+      "integrity": "sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==",
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
+    "node_modules/express": {
+      "version": "5.2.1",
+      "resolved": "https://registry.npmjs.org/express/-/express-5.2.1.tgz",
+      "integrity": "sha512-hIS4idWWai69NezIdRt2xFVofaF4j+6INOpJlVOLDO8zXGpUVEVzIYk12UUi2JzjEzWL3IOAxcTubgz9Po0yXw==",
+      "dependencies": {
+        "accepts": "^2.0.0",
+        "body-parser": "^2.2.1",
+        "content-disposition": "^1.0.0",
+        "content-type": "^1.0.5",
+        "cookie": "^0.7.1",
+        "cookie-signature": "^1.2.1",
+        "debug": "^4.4.0",
+        "depd": "^2.0.0",
+        "encodeurl": "^2.0.0",
+        "escape-html": "^1.0.3",
+        "etag": "^1.8.1",
+        "finalhandler": "^2.1.0",
+        "fresh": "^2.0.0",
+        "http-errors": "^2.0.0",
+        "merge-descriptors": "^2.0.0",
+        "mime-types": "^3.0.0",
+        "on-finished": "^2.4.1",
+        "once": "^1.4.0",
+        "parseurl": "^1.3.3",
+        "proxy-addr": "^2.0.7",
+        "qs": "^6.14.0",
+        "range-parser": "^1.2.1",
+        "router": "^2.2.0",
+        "send": "^1.1.0",
+        "serve-static": "^2.2.0",
+        "statuses": "^2.0.1",
+        "type-is": "^2.0.1",
+        "vary": "^1.1.2"
+      },
+      "engines": {
+        "node": ">= 18"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/express"
+      }
+    },
+    "node_modules/fill-range": {
+      "version": "7.1.1",
+      "resolved": "https://registry.npmjs.org/fill-range/-/fill-range-7.1.1.tgz",
+      "integrity": "sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==",
+      "dev": true,
+      "dependencies": {
+        "to-regex-range": "^5.0.1"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/finalhandler": {
+      "version": "2.1.1",
+      "resolved": "https://registry.npmjs.org/finalhandler/-/finalhandler-2.1.1.tgz",
+      "integrity": "sha512-S8KoZgRZN+a5rNwqTxlZZePjT/4cnm0ROV70LedRHZ0p8u9fRID0hJUZQpkKLzro8LfmC8sx23bY6tVNxv8pQA==",
+      "dependencies": {
+        "debug": "^4.4.0",
+        "encodeurl": "^2.0.0",
+        "escape-html": "^1.0.3",
+        "on-finished": "^2.4.1",
+        "parseurl": "^1.3.3",
+        "statuses": "^2.0.1"
+      },
+      "engines": {
+        "node": ">= 18.0.0"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/express"
+      }
+    },
+    "node_modules/follow-redirects": {
+      "version": "1.15.11",
+      "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.11.tgz",
+      "integrity": "sha512-deG2P0JfjrTxl50XGCDyfI97ZGVCxIpfKYmfyrQ54n5FO/0gfIES8C/Psl6kWVDolizcaaxZJnTS0QSMxvnsBQ==",
+      "funding": [
+        {
+          "type": "individual",
+          "url": "https://github.com/sponsors/RubenVerborgh"
+        }
+      ],
+      "engines": {
+        "node": ">=4.0"
+      },
+      "peerDependenciesMeta": {
+        "debug": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/form-data": {
+      "version": "4.0.5",
+      "resolved": "https://registry.npmjs.org/form-data/-/form-data-4.0.5.tgz",
+      "integrity": "sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w==",
+      "dependencies": {
+        "asynckit": "^0.4.0",
+        "combined-stream": "^1.0.8",
+        "es-set-tostringtag": "^2.1.0",
+        "hasown": "^2.0.2",
+        "mime-types": "^2.1.12"
+      },
+      "engines": {
+        "node": ">= 6"
+      }
+    },
+    "node_modules/form-data/node_modules/mime-db": {
+      "version": "1.52.0",
+      "resolved": "https://registry.npmjs.org/mime-db/-/mime-db-1.52.0.tgz",
+      "integrity": "sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==",
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
+    "node_modules/form-data/node_modules/mime-types": {
+      "version": "2.1.35",
+      "resolved": "https://registry.npmjs.org/mime-types/-/mime-types-2.1.35.tgz",
+      "integrity": "sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==",
+      "dependencies": {
+        "mime-db": "1.52.0"
+      },
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
+    "node_modules/forwarded": {
+      "version": "0.2.0",
+      "resolved": "https://registry.npmjs.org/forwarded/-/forwarded-0.2.0.tgz",
+      "integrity": "sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==",
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
+    "node_modules/fresh": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/fresh/-/fresh-2.0.0.tgz",
+      "integrity": "sha512-Rx/WycZ60HOaqLKAi6cHRKKI7zxWbJ31MhntmtwMoaTeF7XFH9hhBp8vITaMidfljRQ6eYWCKkaTK+ykVJHP2A==",
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/fsevents": {
+      "version": "2.3.3",
+      "resolved": "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz",
+      "integrity": "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==",
+      "dev": true,
+      "hasInstallScript": true,
+      "optional": true,
+      "os": [
+        "darwin"
+      ],
+      "engines": {
+        "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
+      }
+    },
+    "node_modules/function-bind": {
+      "version": "1.1.2",
+      "resolved": "https://registry.npmjs.org/function-bind/-/function-bind-1.1.2.tgz",
+      "integrity": "sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==",
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/get-intrinsic": {
+      "version": "1.3.0",
+      "resolved": "https://registry.npmjs.org/get-intrinsic/-/get-intrinsic-1.3.0.tgz",
+      "integrity": "sha512-9fSjSaos/fRIVIp+xSJlE6lfwhES7LNtKaCBIamHsjr2na1BiABJPo0mOjjz8GJDURarmCPGqaiVg5mfjb98CQ==",
+      "dependencies": {
+        "call-bind-apply-helpers": "^1.0.2",
+        "es-define-property": "^1.0.1",
+        "es-errors": "^1.3.0",
+        "es-object-atoms": "^1.1.1",
+        "function-bind": "^1.1.2",
+        "get-proto": "^1.0.1",
+        "gopd": "^1.2.0",
+        "has-symbols": "^1.1.0",
+        "hasown": "^2.0.2",
+        "math-intrinsics": "^1.1.0"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/get-proto": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/get-proto/-/get-proto-1.0.1.tgz",
+      "integrity": "sha512-sTSfBjoXBp89JvIKIefqw7U2CCebsc74kiY6awiGogKtoSGbgjYE/G/+l9sF3MWFPNc9IcoOC4ODfKHfxFmp0g==",
+      "dependencies": {
+        "dunder-proto": "^1.0.1",
+        "es-object-atoms": "^1.0.0"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/glob-parent": {
+      "version": "5.1.2",
+      "resolved": "https://registry.npmjs.org/glob-parent/-/glob-parent-5.1.2.tgz",
+      "integrity": "sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==",
+      "dev": true,
+      "dependencies": {
+        "is-glob": "^4.0.1"
+      },
+      "engines": {
+        "node": ">= 6"
+      }
+    },
+    "node_modules/gopd": {
+      "version": "1.2.0",
+      "resolved": "https://registry.npmjs.org/gopd/-/gopd-1.2.0.tgz",
+      "integrity": "sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==",
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/has-flag": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/has-flag/-/has-flag-3.0.0.tgz",
+      "integrity": "sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw==",
+      "dev": true,
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/has-symbols": {
+      "version": "1.1.0",
+      "resolved": "https://registry.npmjs.org/has-symbols/-/has-symbols-1.1.0.tgz",
+      "integrity": "sha512-1cDNdwJ2Jaohmb3sg4OmKaMBwuC48sYni5HUw2DvsC8LjGTLK9h+eb1X6RyuOHe4hT0ULCW68iomhjUoKUqlPQ==",
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/has-tostringtag": {
+      "version": "1.0.2",
+      "resolved": "https://registry.npmjs.org/has-tostringtag/-/has-tostringtag-1.0.2.tgz",
+      "integrity": "sha512-NqADB8VjPFLM2V0VvHUewwwsw0ZWBaIdgo+ieHtK3hasLz4qeCRjYcqfB6AQrBggRKppKF8L52/VqdVsO47Dlw==",
+      "dependencies": {
+        "has-symbols": "^1.0.3"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/hasown": {
+      "version": "2.0.2",
+      "resolved": "https://registry.npmjs.org/hasown/-/hasown-2.0.2.tgz",
+      "integrity": "sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==",
+      "dependencies": {
+        "function-bind": "^1.1.2"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/http-errors": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/http-errors/-/http-errors-2.0.1.tgz",
+      "integrity": "sha512-4FbRdAX+bSdmo4AUFuS0WNiPz8NgFt+r8ThgNWmlrjQjt1Q7ZR9+zTlce2859x4KSXrwIsaeTqDoKQmtP8pLmQ==",
+      "dependencies": {
+        "depd": "~2.0.0",
+        "inherits": "~2.0.4",
+        "setprototypeof": "~1.2.0",
+        "statuses": "~2.0.2",
+        "toidentifier": "~1.0.1"
+      },
+      "engines": {
+        "node": ">= 0.8"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/express"
+      }
+    },
+    "node_modules/iconv-lite": {
+      "version": "0.7.1",
+      "resolved": "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.7.1.tgz",
+      "integrity": "sha512-2Tth85cXwGFHfvRgZWszZSvdo+0Xsqmw8k8ZwxScfcBneNUraK+dxRxRm24nszx80Y0TVio8kKLt5sLE7ZCLlw==",
+      "dependencies": {
+        "safer-buffer": ">= 2.1.2 < 3.0.0"
+      },
+      "engines": {
+        "node": ">=0.10.0"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/express"
+      }
+    },
+    "node_modules/ignore-by-default": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/ignore-by-default/-/ignore-by-default-1.0.1.tgz",
+      "integrity": "sha512-Ius2VYcGNk7T90CppJqcIkS5ooHUZyIQK+ClZfMfMNFEF9VSE73Fq+906u/CWu92x4gzZMWOwfFYckPObzdEbA==",
+      "dev": true
+    },
+    "node_modules/inherits": {
+      "version": "2.0.4",
+      "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.4.tgz",
+      "integrity": "sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ=="
+    },
+    "node_modules/ipaddr.js": {
+      "version": "1.9.1",
+      "resolved": "https://registry.npmjs.org/ipaddr.js/-/ipaddr.js-1.9.1.tgz",
+      "integrity": "sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==",
+      "engines": {
+        "node": ">= 0.10"
+      }
+    },
+    "node_modules/is-binary-path": {
+      "version": "2.1.0",
+      "resolved": "https://registry.npmjs.org/is-binary-path/-/is-binary-path-2.1.0.tgz",
+      "integrity": "sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==",
+      "dev": true,
+      "dependencies": {
+        "binary-extensions": "^2.0.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/is-extglob": {
+      "version": "2.1.1",
+      "resolved": "https://registry.npmjs.org/is-extglob/-/is-extglob-2.1.1.tgz",
+      "integrity": "sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==",
+      "dev": true,
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/is-glob": {
+      "version": "4.0.3",
+      "resolved": "https://registry.npmjs.org/is-glob/-/is-glob-4.0.3.tgz",
+      "integrity": "sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg==",
+      "dev": true,
+      "dependencies": {
+        "is-extglob": "^2.1.1"
+      },
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/is-number": {
+      "version": "7.0.0",
+      "resolved": "https://registry.npmjs.org/is-number/-/is-number-7.0.0.tgz",
+      "integrity": "sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==",
+      "dev": true,
+      "engines": {
+        "node": ">=0.12.0"
+      }
+    },
+    "node_modules/is-promise": {
+      "version": "4.0.0",
+      "resolved": "https://registry.npmjs.org/is-promise/-/is-promise-4.0.0.tgz",
+      "integrity": "sha512-hvpoI6korhJMnej285dSg6nu1+e6uxs7zG3BYAm5byqDsgJNWwxzM6z6iZiAgQR4TJ30JmBTOwqZUw3WlyH3AQ=="
+    },
+    "node_modules/jsonwebtoken": {
+      "version": "9.0.3",
+      "resolved": "https://registry.npmjs.org/jsonwebtoken/-/jsonwebtoken-9.0.3.tgz",
+      "integrity": "sha512-MT/xP0CrubFRNLNKvxJ2BYfy53Zkm++5bX9dtuPbqAeQpTVe0MQTFhao8+Cp//EmJp244xt6Drw/GVEGCUj40g==",
+      "dependencies": {
+        "jws": "^4.0.1",
+        "lodash.includes": "^4.3.0",
+        "lodash.isboolean": "^3.0.3",
+        "lodash.isinteger": "^4.0.4",
+        "lodash.isnumber": "^3.0.3",
+        "lodash.isplainobject": "^4.0.6",
+        "lodash.isstring": "^4.0.1",
+        "lodash.once": "^4.0.0",
+        "ms": "^2.1.1",
+        "semver": "^7.5.4"
+      },
+      "engines": {
+        "node": ">=12",
+        "npm": ">=6"
+      }
+    },
+    "node_modules/jwa": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/jwa/-/jwa-2.0.1.tgz",
+      "integrity": "sha512-hRF04fqJIP8Abbkq5NKGN0Bbr3JxlQ+qhZufXVr0DvujKy93ZCbXZMHDL4EOtodSbCWxOqR8MS1tXA5hwqCXDg==",
+      "dependencies": {
+        "buffer-equal-constant-time": "^1.0.1",
+        "ecdsa-sig-formatter": "1.0.11",
+        "safe-buffer": "^5.0.1"
+      }
+    },
+    "node_modules/jws": {
+      "version": "4.0.1",
+      "resolved": "https://registry.npmjs.org/jws/-/jws-4.0.1.tgz",
+      "integrity": "sha512-EKI/M/yqPncGUUh44xz0PxSidXFr/+r0pA70+gIYhjv+et7yxM+s29Y+VGDkovRofQem0fs7Uvf4+YmAdyRduA==",
+      "dependencies": {
+        "jwa": "^2.0.1",
+        "safe-buffer": "^5.0.1"
+      }
+    },
+    "node_modules/kareem": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/kareem/-/kareem-3.0.0.tgz",
+      "integrity": "sha512-RKhaOBSPN8L7y4yAgNhDT2602G5FD6QbOIISbjN9D6mjHPeqeg7K+EB5IGSU5o81/X2Gzm3ICnAvQW3x3OP8HA==",
+      "engines": {
+        "node": ">=18.0.0"
+      }
+    },
+    "node_modules/lodash": {
+      "version": "4.17.21",
+      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz",
+      "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg=="
+    },
+    "node_modules/lodash.includes": {
+      "version": "4.3.0",
+      "resolved": "https://registry.npmjs.org/lodash.includes/-/lodash.includes-4.3.0.tgz",
+      "integrity": "sha512-W3Bx6mdkRTGtlJISOvVD/lbqjTlPPUDTMnlXZFnVwi9NKJ6tiAk6LVdlhZMm17VZisqhKcgzpO5Wz91PCt5b0w=="
+    },
+    "node_modules/lodash.isboolean": {
+      "version": "3.0.3",
+      "resolved": "https://registry.npmjs.org/lodash.isboolean/-/lodash.isboolean-3.0.3.tgz",
+      "integrity": "sha512-Bz5mupy2SVbPHURB98VAcw+aHh4vRV5IPNhILUCsOzRmsTmSQ17jIuqopAentWoehktxGd9e/hbIXq980/1QJg=="
+    },
+    "node_modules/lodash.isinteger": {
+      "version": "4.0.4",
+      "resolved": "https://registry.npmjs.org/lodash.isinteger/-/lodash.isinteger-4.0.4.tgz",
+      "integrity": "sha512-DBwtEWN2caHQ9/imiNeEA5ys1JoRtRfY3d7V9wkqtbycnAmTvRRmbHKDV4a0EYc678/dia0jrte4tjYwVBaZUA=="
+    },
+    "node_modules/lodash.isnumber": {
+      "version": "3.0.3",
+      "resolved": "https://registry.npmjs.org/lodash.isnumber/-/lodash.isnumber-3.0.3.tgz",
+      "integrity": "sha512-QYqzpfwO3/CWf3XP+Z+tkQsfaLL/EnUlXWVkIk5FUPc4sBdTehEqZONuyRt2P67PXAk+NXmTBcc97zw9t1FQrw=="
+    },
+    "node_modules/lodash.isplainobject": {
+      "version": "4.0.6",
+      "resolved": "https://registry.npmjs.org/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz",
+      "integrity": "sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA=="
+    },
+    "node_modules/lodash.isstring": {
+      "version": "4.0.1",
+      "resolved": "https://registry.npmjs.org/lodash.isstring/-/lodash.isstring-4.0.1.tgz",
+      "integrity": "sha512-0wJxfxH1wgO3GrbuP+dTTk7op+6L41QCXbGINEmD+ny/G/eCqGzxyCsh7159S+mgDDcoarnBw6PC1PS5+wUGgw=="
+    },
+    "node_modules/lodash.once": {
+      "version": "4.1.1",
+      "resolved": "https://registry.npmjs.org/lodash.once/-/lodash.once-4.1.1.tgz",
+      "integrity": "sha512-Sb487aTOCr9drQVL8pIxOzVhafOjZN9UU54hiN8PU3uAiSV7lx1yYNpbNmex2PK6dSJoNTSJUUswT651yww3Mg=="
+    },
+    "node_modules/math-intrinsics": {
+      "version": "1.1.0",
+      "resolved": "https://registry.npmjs.org/math-intrinsics/-/math-intrinsics-1.1.0.tgz",
+      "integrity": "sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==",
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/media-typer": {
+      "version": "1.1.0",
+      "resolved": "https://registry.npmjs.org/media-typer/-/media-typer-1.1.0.tgz",
+      "integrity": "sha512-aisnrDP4GNe06UcKFnV5bfMNPBUw4jsLGaWwWfnH3v02GnBuXX2MCVn5RbrWo0j3pczUilYblq7fQ7Nw2t5XKw==",
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/memory-pager": {
+      "version": "1.5.0",
+      "resolved": "https://registry.npmjs.org/memory-pager/-/memory-pager-1.5.0.tgz",
+      "integrity": "sha512-ZS4Bp4r/Zoeq6+NLJpP+0Zzm0pR8whtGPf1XExKLJBAczGMnSi3It14OiNCStjQjM6NU1okjQGSxgEZN8eBYKg=="
+    },
+    "node_modules/merge-descriptors": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/merge-descriptors/-/merge-descriptors-2.0.0.tgz",
+      "integrity": "sha512-Snk314V5ayFLhp3fkUREub6WtjBfPdCPY1Ln8/8munuLuiYhsABgBVWsozAG+MWMbVEvcdcpbi9R7ww22l9Q3g==",
+      "engines": {
+        "node": ">=18"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/mime-db": {
+      "version": "1.54.0",
+      "resolved": "https://registry.npmjs.org/mime-db/-/mime-db-1.54.0.tgz",
+      "integrity": "sha512-aU5EJuIN2WDemCcAp2vFBfp/m4EAhWJnUNSSw0ixs7/kXbd6Pg64EmwJkNdFhB8aWt1sH2CTXrLxo/iAGV3oPQ==",
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
+    "node_modules/mime-types": {
+      "version": "3.0.2",
+      "resolved": "https://registry.npmjs.org/mime-types/-/mime-types-3.0.2.tgz",
+      "integrity": "sha512-Lbgzdk0h4juoQ9fCKXW4by0UJqj+nOOrI9MJ1sSj4nI8aI2eo1qmvQEie4VD1glsS250n15LsWsYtCugiStS5A==",
+      "dependencies": {
+        "mime-db": "^1.54.0"
+      },
+      "engines": {
+        "node": ">=18"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/express"
+      }
+    },
+    "node_modules/minimatch": {
+      "version": "3.1.2",
+      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-3.1.2.tgz",
+      "integrity": "sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==",
+      "dev": true,
+      "dependencies": {
+        "brace-expansion": "^1.1.7"
+      },
+      "engines": {
+        "node": "*"
+      }
+    },
+    "node_modules/minimist": {
+      "version": "1.2.8",
+      "resolved": "https://registry.npmjs.org/minimist/-/minimist-1.2.8.tgz",
+      "integrity": "sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==",
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/mkdirp": {
+      "version": "0.5.6",
+      "resolved": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.6.tgz",
+      "integrity": "sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==",
+      "dependencies": {
+        "minimist": "^1.2.6"
+      },
+      "bin": {
+        "mkdirp": "bin/cmd.js"
+      }
+    },
+    "node_modules/mongodb": {
+      "version": "7.0.0",
+      "resolved": "https://registry.npmjs.org/mongodb/-/mongodb-7.0.0.tgz",
+      "integrity": "sha512-vG/A5cQrvGGvZm2mTnCSz1LUcbOPl83hfB6bxULKQ8oFZauyox/2xbZOoGNl+64m8VBrETkdGCDBdOsCr3F3jg==",
+      "dependencies": {
+        "@mongodb-js/saslprep": "^1.3.0",
+        "bson": "^7.0.0",
+        "mongodb-connection-string-url": "^7.0.0"
+      },
+      "engines": {
+        "node": ">=20.19.0"
+      },
+      "peerDependencies": {
+        "@aws-sdk/credential-providers": "^3.806.0",
+        "@mongodb-js/zstd": "^7.0.0",
+        "gcp-metadata": "^7.0.1",
+        "kerberos": "^7.0.0",
+        "mongodb-client-encryption": ">=7.0.0 <7.1.0",
+        "snappy": "^7.3.2",
+        "socks": "^2.8.6"
+      },
+      "peerDependenciesMeta": {
+        "@aws-sdk/credential-providers": {
+          "optional": true
+        },
+        "@mongodb-js/zstd": {
+          "optional": true
+        },
+        "gcp-metadata": {
+          "optional": true
+        },
+        "kerberos": {
+          "optional": true
+        },
+        "mongodb-client-encryption": {
+          "optional": true
+        },
+        "snappy": {
+          "optional": true
+        },
+        "socks": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/mongodb-connection-string-url": {
+      "version": "7.0.0",
+      "resolved": "https://registry.npmjs.org/mongodb-connection-string-url/-/mongodb-connection-string-url-7.0.0.tgz",
+      "integrity": "sha512-irhhjRVLE20hbkRl4zpAYLnDMM+zIZnp0IDB9akAFFUZp/3XdOfwwddc7y6cNvF2WCEtfTYRwYbIfYa2kVY0og==",
+      "dependencies": {
+        "@types/whatwg-url": "^13.0.0",
+        "whatwg-url": "^14.1.0"
+      },
+      "engines": {
+        "node": ">=20.19.0"
+      }
+    },
+    "node_modules/mongoose": {
+      "version": "9.0.2",
+      "resolved": "https://registry.npmjs.org/mongoose/-/mongoose-9.0.2.tgz",
+      "integrity": "sha512-+GCaqwE+X//yN9eo2M2L/n+mVti9J6vH5iQKbhD+2AArZd5iaZqK/DkmkE4S6/iYYMyVQPTXsRk7jyVOYEtJzA==",
+      "dependencies": {
+        "kareem": "3.0.0",
+        "mongodb": "~7.0",
+        "mpath": "0.9.0",
+        "mquery": "6.0.0",
+        "ms": "2.1.3",
+        "sift": "17.1.3"
+      },
+      "engines": {
+        "node": ">=20.19.0"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/mongoose"
+      }
+    },
+    "node_modules/mpath": {
+      "version": "0.9.0",
+      "resolved": "https://registry.npmjs.org/mpath/-/mpath-0.9.0.tgz",
+      "integrity": "sha512-ikJRQTk8hw5DEoFVxHG1Gn9T/xcjtdnOKIU1JTmGjZZlg9LST2mBLmcX3/ICIbgJydT2GOc15RnNy5mHmzfSew==",
+      "engines": {
+        "node": ">=4.0.0"
+      }
+    },
+    "node_modules/mquery": {
+      "version": "6.0.0",
+      "resolved": "https://registry.npmjs.org/mquery/-/mquery-6.0.0.tgz",
+      "integrity": "sha512-b2KQNsmgtkscfeDgkYMcWGn9vZI9YoXh802VDEwE6qc50zxBFQ0Oo8ROkawbPAsXCY1/Z1yp0MagqsZStPWJjw==",
+      "engines": {
+        "node": ">=20.19.0"
+      }
+    },
+    "node_modules/ms": {
+      "version": "2.1.3",
+      "resolved": "https://registry.npmjs.org/ms/-/ms-2.1.3.tgz",
+      "integrity": "sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA=="
+    },
+    "node_modules/multer": {
+      "version": "2.0.2",
+      "resolved": "https://registry.npmjs.org/multer/-/multer-2.0.2.tgz",
+      "integrity": "sha512-u7f2xaZ/UG8oLXHvtF/oWTRvT44p9ecwBBqTwgJVq0+4BW1g8OW01TyMEGWBHbyMOYVHXslaut7qEQ1meATXgw==",
+      "dependencies": {
+        "append-field": "^1.0.0",
+        "busboy": "^1.6.0",
+        "concat-stream": "^2.0.0",
+        "mkdirp": "^0.5.6",
+        "object-assign": "^4.1.1",
+        "type-is": "^1.6.18",
+        "xtend": "^4.0.2"
+      },
+      "engines": {
+        "node": ">= 10.16.0"
+      }
+    },
+    "node_modules/multer/node_modules/media-typer": {
+      "version": "0.3.0",
+      "resolved": "https://registry.npmjs.org/media-typer/-/media-typer-0.3.0.tgz",
+      "integrity": "sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==",
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
+    "node_modules/multer/node_modules/mime-db": {
+      "version": "1.52.0",
+      "resolved": "https://registry.npmjs.org/mime-db/-/mime-db-1.52.0.tgz",
+      "integrity": "sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==",
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
+    "node_modules/multer/node_modules/mime-types": {
+      "version": "2.1.35",
+      "resolved": "https://registry.npmjs.org/mime-types/-/mime-types-2.1.35.tgz",
+      "integrity": "sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==",
+      "dependencies": {
+        "mime-db": "1.52.0"
+      },
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
+    "node_modules/multer/node_modules/type-is": {
+      "version": "1.6.18",
+      "resolved": "https://registry.npmjs.org/type-is/-/type-is-1.6.18.tgz",
+      "integrity": "sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==",
+      "dependencies": {
+        "media-typer": "0.3.0",
+        "mime-types": "~2.1.24"
+      },
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
+    "node_modules/negotiator": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/negotiator/-/negotiator-1.0.0.tgz",
+      "integrity": "sha512-8Ofs/AUQh8MaEcrlq5xOX0CQ9ypTF5dl78mjlMNfOK08fzpgTHQRQPBxcPlEtIw0yRpws+Zo/3r+5WRby7u3Gg==",
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
+    "node_modules/nodemon": {
+      "version": "3.1.11",
+      "resolved": "https://registry.npmjs.org/nodemon/-/nodemon-3.1.11.tgz",
+      "integrity": "sha512-is96t8F/1//UHAjNPHpbsNY46ELPpftGUoSVNXwUfMk/qdjSylYrWSu1XavVTBOn526kFiOR733ATgNBCQyH0g==",
+      "dev": true,
+      "dependencies": {
+        "chokidar": "^3.5.2",
+        "debug": "^4",
+        "ignore-by-default": "^1.0.1",
+        "minimatch": "^3.1.2",
+        "pstree.remy": "^1.1.8",
+        "semver": "^7.5.3",
+        "simple-update-notifier": "^2.0.0",
+        "supports-color": "^5.5.0",
+        "touch": "^3.1.0",
+        "undefsafe": "^2.0.5"
+      },
+      "bin": {
+        "nodemon": "bin/nodemon.js"
+      },
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/nodemon"
+      }
+    },
+    "node_modules/normalize-path": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/normalize-path/-/normalize-path-3.0.0.tgz",
+      "integrity": "sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==",
+      "dev": true,
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/object-assign": {
+      "version": "4.1.1",
+      "resolved": "https://registry.npmjs.org/object-assign/-/object-assign-4.1.1.tgz",
+      "integrity": "sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/object-inspect": {
+      "version": "1.13.4",
+      "resolved": "https://registry.npmjs.org/object-inspect/-/object-inspect-1.13.4.tgz",
+      "integrity": "sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew==",
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/on-finished": {
+      "version": "2.4.1",
+      "resolved": "https://registry.npmjs.org/on-finished/-/on-finished-2.4.1.tgz",
+      "integrity": "sha512-oVlzkg3ENAhCk2zdv7IJwd/QUD4z2RxRwpkcGY8psCVcCYZNq4wYnVWALHM+brtuJjePWiYF/ClmuDr8Ch5+kg==",
+      "dependencies": {
+        "ee-first": "1.1.1"
+      },
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/once": {
+      "version": "1.4.0",
+      "resolved": "https://registry.npmjs.org/once/-/once-1.4.0.tgz",
+      "integrity": "sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==",
+      "dependencies": {
+        "wrappy": "1"
+      }
+    },
+    "node_modules/parseurl": {
+      "version": "1.3.3",
+      "resolved": "https://registry.npmjs.org/parseurl/-/parseurl-1.3.3.tgz",
+      "integrity": "sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==",
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/path-to-regexp": {
+      "version": "8.3.0",
+      "resolved": "https://registry.npmjs.org/path-to-regexp/-/path-to-regexp-8.3.0.tgz",
+      "integrity": "sha512-7jdwVIRtsP8MYpdXSwOS0YdD0Du+qOoF/AEPIt88PcCFrZCzx41oxku1jD88hZBwbNUIEfpqvuhjFaMAqMTWnA==",
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/express"
+      }
+    },
+    "node_modules/picomatch": {
+      "version": "2.3.1",
+      "resolved": "https://registry.npmjs.org/picomatch/-/picomatch-2.3.1.tgz",
+      "integrity": "sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==",
+      "dev": true,
+      "engines": {
+        "node": ">=8.6"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/jonschlinkert"
+      }
+    },
+    "node_modules/proxy-addr": {
+      "version": "2.0.7",
+      "resolved": "https://registry.npmjs.org/proxy-addr/-/proxy-addr-2.0.7.tgz",
+      "integrity": "sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==",
+      "dependencies": {
+        "forwarded": "0.2.0",
+        "ipaddr.js": "1.9.1"
+      },
+      "engines": {
+        "node": ">= 0.10"
+      }
+    },
+    "node_modules/proxy-from-env": {
+      "version": "1.1.0",
+      "resolved": "https://registry.npmjs.org/proxy-from-env/-/proxy-from-env-1.1.0.tgz",
+      "integrity": "sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg=="
+    },
+    "node_modules/pstree.remy": {
+      "version": "1.1.8",
+      "resolved": "https://registry.npmjs.org/pstree.remy/-/pstree.remy-1.1.8.tgz",
+      "integrity": "sha512-77DZwxQmxKnu3aR542U+X8FypNzbfJ+C5XQDk3uWjWxn6151aIMGthWYRXTqT1E5oJvg+ljaa2OJi+VfvCOQ8w==",
+      "dev": true
+    },
+    "node_modules/punycode": {
+      "version": "2.3.1",
+      "resolved": "https://registry.npmjs.org/punycode/-/punycode-2.3.1.tgz",
+      "integrity": "sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==",
+      "engines": {
+        "node": ">=6"
+      }
+    },
+    "node_modules/q": {
+      "version": "1.5.1",
+      "resolved": "https://registry.npmjs.org/q/-/q-1.5.1.tgz",
+      "integrity": "sha512-kV/CThkXo6xyFEZUugw/+pIOywXcDbFYgSct5cT3gqlbkBE1SJdwy6UQoZvodiWF/ckQLZyDE/Bu1M6gVu5lVw==",
+      "deprecated": "You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.\n\n(For a CapTP with native promises, see @endo/eventual-send and @endo/captp)",
+      "engines": {
+        "node": ">=0.6.0",
+        "teleport": ">=0.2.0"
+      }
+    },
+    "node_modules/qs": {
+      "version": "6.14.0",
+      "resolved": "https://registry.npmjs.org/qs/-/qs-6.14.0.tgz",
+      "integrity": "sha512-YWWTjgABSKcvs/nWBi9PycY/JiPJqOD4JA6o9Sej2AtvSGarXxKC3OQSk4pAarbdQlKAh5D4FCQkJNkW+GAn3w==",
+      "dependencies": {
+        "side-channel": "^1.1.0"
+      },
+      "engines": {
+        "node": ">=0.6"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/range-parser": {
+      "version": "1.2.1",
+      "resolved": "https://registry.npmjs.org/range-parser/-/range-parser-1.2.1.tgz",
+      "integrity": "sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==",
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
+    "node_modules/raw-body": {
+      "version": "3.0.2",
+      "resolved": "https://registry.npmjs.org/raw-body/-/raw-body-3.0.2.tgz",
+      "integrity": "sha512-K5zQjDllxWkf7Z5xJdV0/B0WTNqx6vxG70zJE4N0kBs4LovmEYWJzQGxC9bS9RAKu3bgM40lrd5zoLJ12MQ5BA==",
+      "dependencies": {
+        "bytes": "~3.1.2",
+        "http-errors": "~2.0.1",
+        "iconv-lite": "~0.7.0",
+        "unpipe": "~1.0.0"
+      },
+      "engines": {
+        "node": ">= 0.10"
+      }
+    },
+    "node_modules/razorpay": {
+      "version": "2.9.6",
+      "resolved": "https://registry.npmjs.org/razorpay/-/razorpay-2.9.6.tgz",
+      "integrity": "sha512-zsHAQzd6e1Cc6BNoCNZQaf65ElL6O6yw0wulxmoG5VQDr363fZC90Mp1V5EktVzG45yPyNomNXWlf4cQ3622gQ==",
+      "dependencies": {
+        "axios": "^1.6.8"
+      }
+    },
+    "node_modules/readable-stream": {
+      "version": "3.6.2",
+      "resolved": "https://registry.npmjs.org/readable-stream/-/readable-stream-3.6.2.tgz",
+      "integrity": "sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==",
+      "dependencies": {
+        "inherits": "^2.0.3",
+        "string_decoder": "^1.1.1",
+        "util-deprecate": "^1.0.1"
+      },
+      "engines": {
+        "node": ">= 6"
+      }
+    },
+    "node_modules/readdirp": {
+      "version": "3.6.0",
+      "resolved": "https://registry.npmjs.org/readdirp/-/readdirp-3.6.0.tgz",
+      "integrity": "sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==",
+      "dev": true,
+      "dependencies": {
+        "picomatch": "^2.2.1"
+      },
+      "engines": {
+        "node": ">=8.10.0"
+      }
+    },
+    "node_modules/router": {
+      "version": "2.2.0",
+      "resolved": "https://registry.npmjs.org/router/-/router-2.2.0.tgz",
+      "integrity": "sha512-nLTrUKm2UyiL7rlhapu/Zl45FwNgkZGaCpZbIHajDYgwlJCOzLSk+cIPAnsEqV955GjILJnKbdQC1nVPz+gAYQ==",
+      "dependencies": {
+        "debug": "^4.4.0",
+        "depd": "^2.0.0",
+        "is-promise": "^4.0.0",
+        "parseurl": "^1.3.3",
+        "path-to-regexp": "^8.0.0"
+      },
+      "engines": {
+        "node": ">= 18"
+      }
+    },
+    "node_modules/safe-buffer": {
+      "version": "5.2.1",
+      "resolved": "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.2.1.tgz",
+      "integrity": "sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==",
+      "funding": [
+        {
+          "type": "github",
+          "url": "https://github.com/sponsors/feross"
+        },
+        {
+          "type": "patreon",
+          "url": "https://www.patreon.com/feross"
+        },
+        {
+          "type": "consulting",
+          "url": "https://feross.org/support"
+        }
+      ]
+    },
+    "node_modules/safer-buffer": {
+      "version": "2.1.2",
+      "resolved": "https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz",
+      "integrity": "sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg=="
+    },
+    "node_modules/semver": {
+      "version": "7.7.3",
+      "resolved": "https://registry.npmjs.org/semver/-/semver-7.7.3.tgz",
+      "integrity": "sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==",
+      "bin": {
+        "semver": "bin/semver.js"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/send": {
+      "version": "1.2.1",
+      "resolved": "https://registry.npmjs.org/send/-/send-1.2.1.tgz",
+      "integrity": "sha512-1gnZf7DFcoIcajTjTwjwuDjzuz4PPcY2StKPlsGAQ1+YH20IRVrBaXSWmdjowTJ6u8Rc01PoYOGHXfP1mYcZNQ==",
+      "dependencies": {
+        "debug": "^4.4.3",
+        "encodeurl": "^2.0.0",
+        "escape-html": "^1.0.3",
+        "etag": "^1.8.1",
+        "fresh": "^2.0.0",
+        "http-errors": "^2.0.1",
+        "mime-types": "^3.0.2",
+        "ms": "^2.1.3",
+        "on-finished": "^2.4.1",
+        "range-parser": "^1.2.1",
+        "statuses": "^2.0.2"
+      },
+      "engines": {
+        "node": ">= 18"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/express"
+      }
+    },
+    "node_modules/serve-static": {
+      "version": "2.2.1",
+      "resolved": "https://registry.npmjs.org/serve-static/-/serve-static-2.2.1.tgz",
+      "integrity": "sha512-xRXBn0pPqQTVQiC8wyQrKs2MOlX24zQ0POGaj0kultvoOCstBQM5yvOhAVSUwOMjQtTvsPWoNCHfPGwaaQJhTw==",
+      "dependencies": {
+        "encodeurl": "^2.0.0",
+        "escape-html": "^1.0.3",
+        "parseurl": "^1.3.3",
+        "send": "^1.2.0"
+      },
+      "engines": {
+        "node": ">= 18"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/express"
+      }
+    },
+    "node_modules/setprototypeof": {
+      "version": "1.2.0",
+      "resolved": "https://registry.npmjs.org/setprototypeof/-/setprototypeof-1.2.0.tgz",
+      "integrity": "sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw=="
+    },
+    "node_modules/side-channel": {
+      "version": "1.1.0",
+      "resolved": "https://registry.npmjs.org/side-channel/-/side-channel-1.1.0.tgz",
+      "integrity": "sha512-ZX99e6tRweoUXqR+VBrslhda51Nh5MTQwou5tnUDgbtyM0dBgmhEDtWGP/xbKn6hqfPRHujUNwz5fy/wbbhnpw==",
+      "dependencies": {
+        "es-errors": "^1.3.0",
+        "object-inspect": "^1.13.3",
+        "side-channel-list": "^1.0.0",
+        "side-channel-map": "^1.0.1",
+        "side-channel-weakmap": "^1.0.2"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/side-channel-list": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/side-channel-list/-/side-channel-list-1.0.0.tgz",
+      "integrity": "sha512-FCLHtRD/gnpCiCHEiJLOwdmFP+wzCmDEkc9y7NsYxeF4u7Btsn1ZuwgwJGxImImHicJArLP4R0yX4c2KCrMrTA==",
+      "dependencies": {
+        "es-errors": "^1.3.0",
+        "object-inspect": "^1.13.3"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/side-channel-map": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/side-channel-map/-/side-channel-map-1.0.1.tgz",
+      "integrity": "sha512-VCjCNfgMsby3tTdo02nbjtM/ewra6jPHmpThenkTYh8pG9ucZ/1P8So4u4FGBek/BjpOVsDCMoLA/iuBKIFXRA==",
+      "dependencies": {
+        "call-bound": "^1.0.2",
+        "es-errors": "^1.3.0",
+        "get-intrinsic": "^1.2.5",
+        "object-inspect": "^1.13.3"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/side-channel-weakmap": {
+      "version": "1.0.2",
+      "resolved": "https://registry.npmjs.org/side-channel-weakmap/-/side-channel-weakmap-1.0.2.tgz",
+      "integrity": "sha512-WPS/HvHQTYnHisLo9McqBHOJk2FkHO/tlpvldyrnem4aeQp4hai3gythswg6p01oSoTl58rcpiFAjF2br2Ak2A==",
+      "dependencies": {
+        "call-bound": "^1.0.2",
+        "es-errors": "^1.3.0",
+        "get-intrinsic": "^1.2.5",
+        "object-inspect": "^1.13.3",
+        "side-channel-map": "^1.0.1"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/sift": {
+      "version": "17.1.3",
+      "resolved": "https://registry.npmjs.org/sift/-/sift-17.1.3.tgz",
+      "integrity": "sha512-Rtlj66/b0ICeFzYTuNvX/EF1igRbbnGSvEyT79McoZa/DeGhMyC5pWKOEsZKnpkqtSeovd5FL/bjHWC3CIIvCQ=="
+    },
+    "node_modules/simple-update-notifier": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/simple-update-notifier/-/simple-update-notifier-2.0.0.tgz",
+      "integrity": "sha512-a2B9Y0KlNXl9u/vsW6sTIu9vGEpfKu2wRV6l1H3XEas/0gUIzGzBoP/IouTcUQbm9JWZLH3COxyn03TYlFax6w==",
+      "dev": true,
+      "dependencies": {
+        "semver": "^7.5.3"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/sparse-bitfield": {
+      "version": "3.0.3",
+      "resolved": "https://registry.npmjs.org/sparse-bitfield/-/sparse-bitfield-3.0.3.tgz",
+      "integrity": "sha512-kvzhi7vqKTfkh0PZU+2D2PIllw2ymqJKujUcyPMd9Y75Nv4nPbGJZXNhxsgdQab2BmlDct1YnfQCguEvHr7VsQ==",
+      "dependencies": {
+        "memory-pager": "^1.0.2"
+      }
+    },
+    "node_modules/statuses": {
+      "version": "2.0.2",
+      "resolved": "https://registry.npmjs.org/statuses/-/statuses-2.0.2.tgz",
+      "integrity": "sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==",
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/streamsearch": {
+      "version": "1.1.0",
+      "resolved": "https://registry.npmjs.org/streamsearch/-/streamsearch-1.1.0.tgz",
+      "integrity": "sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==",
+      "engines": {
+        "node": ">=10.0.0"
+      }
+    },
+    "node_modules/string_decoder": {
+      "version": "1.3.0",
+      "resolved": "https://registry.npmjs.org/string_decoder/-/string_decoder-1.3.0.tgz",
+      "integrity": "sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==",
+      "dependencies": {
+        "safe-buffer": "~5.2.0"
+      }
+    },
+    "node_modules/supports-color": {
+      "version": "5.5.0",
+      "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-5.5.0.tgz",
+      "integrity": "sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==",
+      "dev": true,
+      "dependencies": {
+        "has-flag": "^3.0.0"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/to-regex-range": {
+      "version": "5.0.1",
+      "resolved": "https://registry.npmjs.org/to-regex-range/-/to-regex-range-5.0.1.tgz",
+      "integrity": "sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==",
+      "dev": true,
+      "dependencies": {
+        "is-number": "^7.0.0"
+      },
+      "engines": {
+        "node": ">=8.0"
+      }
+    },
+    "node_modules/toidentifier": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/toidentifier/-/toidentifier-1.0.1.tgz",
+      "integrity": "sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==",
+      "engines": {
+        "node": ">=0.6"
+      }
+    },
+    "node_modules/touch": {
+      "version": "3.1.1",
+      "resolved": "https://registry.npmjs.org/touch/-/touch-3.1.1.tgz",
+      "integrity": "sha512-r0eojU4bI8MnHr8c5bNo7lJDdI2qXlWWJk6a9EAFG7vbhTjElYhBVS3/miuE0uOuoLdb8Mc/rVfsmm6eo5o9GA==",
+      "dev": true,
+      "bin": {
+        "nodetouch": "bin/nodetouch.js"
+      }
+    },
+    "node_modules/tr46": {
+      "version": "5.1.1",
+      "resolved": "https://registry.npmjs.org/tr46/-/tr46-5.1.1.tgz",
+      "integrity": "sha512-hdF5ZgjTqgAntKkklYw0R03MG2x/bSzTtkxmIRw/sTNV8YXsCJ1tfLAX23lhxhHJlEf3CRCOCGGWw3vI3GaSPw==",
+      "dependencies": {
+        "punycode": "^2.3.1"
+      },
+      "engines": {
+        "node": ">=18"
+      }
+    },
+    "node_modules/type-is": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/type-is/-/type-is-2.0.1.tgz",
+      "integrity": "sha512-OZs6gsjF4vMp32qrCbiVSkrFmXtG/AZhY3t0iAMrMBiAZyV9oALtXO8hsrHbMXF9x6L3grlFuwW2oAz7cav+Gw==",
+      "dependencies": {
+        "content-type": "^1.0.5",
+        "media-typer": "^1.1.0",
+        "mime-types": "^3.0.0"
+      },
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
+    "node_modules/typedarray": {
+      "version": "0.0.6",
+      "resolved": "https://registry.npmjs.org/typedarray/-/typedarray-0.0.6.tgz",
+      "integrity": "sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA=="
+    },
+    "node_modules/undefsafe": {
+      "version": "2.0.5",
+      "resolved": "https://registry.npmjs.org/undefsafe/-/undefsafe-2.0.5.tgz",
+      "integrity": "sha512-WxONCrssBM8TSPRqN5EmsjVrsv4A8X12J4ArBiiayv3DyyG3ZlIg6yysuuSYdZsVz3TKcTg2fd//Ujd4CHV1iA==",
+      "dev": true
+    },
+    "node_modules/unpipe": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/unpipe/-/unpipe-1.0.0.tgz",
+      "integrity": "sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==",
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/util-deprecate": {
+      "version": "1.0.2",
+      "resolved": "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz",
+      "integrity": "sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw=="
+    },
+    "node_modules/validator": {
+      "version": "13.15.26",
+      "resolved": "https://registry.npmjs.org/validator/-/validator-13.15.26.tgz",
+      "integrity": "sha512-spH26xU080ydGggxRyR1Yhcbgx+j3y5jbNXk/8L+iRvdIEQ4uTRH2Sgf2dokud6Q4oAtsbNvJ1Ft+9xmm6IZcA==",
+      "engines": {
+        "node": ">= 0.10"
+      }
+    },
+    "node_modules/vary": {
+      "version": "1.1.2",
+      "resolved": "https://registry.npmjs.org/vary/-/vary-1.1.2.tgz",
+      "integrity": "sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==",
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/webidl-conversions": {
+      "version": "7.0.0",
+      "resolved": "https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-7.0.0.tgz",
+      "integrity": "sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==",
+      "engines": {
+        "node": ">=12"
+      }
+    },
+    "node_modules/whatwg-url": {
+      "version": "14.2.0",
+      "resolved": "https://registry.npmjs.org/whatwg-url/-/whatwg-url-14.2.0.tgz",
+      "integrity": "sha512-De72GdQZzNTUBBChsXueQUnPKDkg/5A5zp7pFDuQAj5UFoENpiACU0wlCvzpAGnTkj++ihpKwKyYewn/XNUbKw==",
+      "dependencies": {
+        "tr46": "^5.1.0",
+        "webidl-conversions": "^7.0.0"
+      },
+      "engines": {
+        "node": ">=18"
+      }
+    },
+    "node_modules/wrappy": {
+      "version": "1.0.2",
+      "resolved": "https://registry.npmjs.org/wrappy/-/wrappy-1.0.2.tgz",
+      "integrity": "sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ=="
+    },
+    "node_modules/xtend": {
+      "version": "4.0.2",
+      "resolved": "https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz",
+      "integrity": "sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==",
+      "engines": {
+        "node": ">=0.4"
+      }
+    }
+  }
+}
+
+================================================================================
+
+
+================================================================================
+FILE: package.json
+================================================================================
+
+FILE INFORMATION:
+----------------------------------------
+Size: 646 B
+Extension: .json
+Language: json
+Location: package.json
+Relative Path: root
+Created: 2025-12-21 15:17:36 (Asia/Calcutta / GMT+06:30)
+Modified: 2025-12-28 12:52:26 (Asia/Calcutta / GMT+06:30)
+MD5: 59083a497d128dee6915637d22ccb1a5
+SHA256: 6c69188a1b52f6df01bf1e5e5d17c4bc43138146a46b61f841278c346c51098f
+Encoding: ASCII
+
+FILE CONTENT:
+----------------------------------------
+{
+  "name": "3.-e-commerce",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon ./src/server.js",
+    "start": "node ./src/server.js",
+    "build" : "npm install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.6",
+    "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.8.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.0.2",
+    "multer": "^2.0.2",
+    "razorpay": "^2.9.6",
+    "validator": "^13.15.26"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
+
+================================================================================
