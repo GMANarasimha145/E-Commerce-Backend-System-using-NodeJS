@@ -5,7 +5,7 @@ PROJECT EXPORT FOR LLMs
 PROJECT INFORMATION:
 --------------------------------------------------
 Project Name: 3.-E-Commerce
-Generated On: 2025-12-28 12:52:26 (Asia/Calcutta / GMT+06:30)
+Generated On: 2025-12-28 13:24:08 (Asia/Calcutta / GMT+06:30)
 Total Files Processed: 31
 Export Tool: Easy Whole Project to Single Text File for LLMs v1.1.0
 Tool Author: Jota / José Guilherme Pandolfi
@@ -55,7 +55,7 @@ PROJECT STRUCTURE
 │   └── 📄 EAllUser.js (681 B)
 ├── 📁 routes/
 │   ├── 📄 admin-routes.js (1.14 KB)
-│   ├── 📄 common-routes.js (248 B)
+│   ├── 📄 common-routes.js (409 B)
 │   └── 📄 user-routes.js (1.64 KB)
 ├── 📁 src/
 │   └── 📄 server.js (575 B)
@@ -70,7 +70,7 @@ Total Files: 31
 Total Directories: 9
 Text Files: 31
 Binary Files: 0
-Total Size: 137.07 KB
+Total Size: 137.22 KB
 
 FILE TYPES DISTRIBUTION:
 ------------------------------
@@ -2557,15 +2557,15 @@ FILE: routes/common-routes.js
 
 FILE INFORMATION:
 ----------------------------------------
-Size: 248 B
+Size: 409 B
 Extension: .js
 Language: javascript
 Location: routes/common-routes.js
 Relative Path: routes
 Created: 2025-12-23 10:43:09 (Asia/Calcutta / GMT+06:30)
-Modified: 2025-12-23 10:47:14 (Asia/Calcutta / GMT+06:30)
-MD5: 340e806103e28e153aa69dac892c7750
-SHA256: 9f9f9f5669ea89ef50d8bf24bac9410411202286e2ec7d8fe01580a4433ee7ac
+Modified: 2025-12-28 13:24:07 (Asia/Calcutta / GMT+06:30)
+MD5: efaa8ee26279c4c2ab572ff79436827a
+SHA256: cfaf093a213913f788d7c253bed3b8bb0f26e1da1e19c2a584ccb1bb34675367
 Encoding: ASCII
 
 FILE CONTENT:
@@ -2575,6 +2575,12 @@ const router = express.Router();
 const {showProductsController} = require('../controllers/show-products-common-controller');
 
 router.get('/fetch-products', showProductsController);
+router.get('/test-hello', async(req, res)=>{
+    return res.status(200).json({
+        success : true,
+        message : "Hello this is madhu"
+    });
+});
 
 module.exports = router;
 ================================================================================
