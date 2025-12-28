@@ -6,7 +6,7 @@ router.get('/fetch-products', showProductsController);
 router.get('/test-hello', async(req, res)=>{
     return res.status(200).json({
         success : true,
-        message : "Hello this is madhu"
+        message : "Hello, Welcome to ECommerce."
     });
 });
 
